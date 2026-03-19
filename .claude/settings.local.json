@@ -5,7 +5,9 @@
       "Bash(ng generate:*)",
       "Bash(npm install:*)",
       "Bash(npm pkg:*)",
-      "Bash(ng build:*)"
+      "Bash(ng build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

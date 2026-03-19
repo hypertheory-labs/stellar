@@ -7,6 +7,13 @@ import { computeDiff, DiffEntry, formatValue } from './diff.utils';
 type OverlayMode = 'closed' | 'picking' | 'viewing';
 type PanelView = 'state' | 'diff';
 
+const MIN_WIDTH = 360;
+const MAX_WIDTH = 1200;
+const DEFAULT_WIDTH = 600;
+const DEFAULT_HEIGHT = 500;
+const MIN_HEIGHT = 200;
+const MAX_HEIGHT = 900;
+
 @Component({
   selector: 'stellar-overlay',
   standalone: true,
@@ -27,8 +34,6 @@ type PanelView = 'state' | 'diff';
 
     /* ── Panel ───────────────────────────────────────────────── */
     .panel {
-      width: 480px;
-      max-height: 600px;
       background: #1e1e2e;
       color: #cdd6f4;
       border: 1px solid #45475a;
@@ -36,6 +41,39 @@ type PanelView = 'state' | 'diff';
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
+    }
+
+    /* Left-edge horizontal resize handle */
+    .resize-h {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      cursor: ew-resize;
+      z-index: 1;
+    }
+
+    .resize-h:hover, .resize-h.dragging {
+      background: #cba6f7;
+      opacity: 0.5;
+    }
+
+    /* Top-edge vertical resize handle */
+    .resize-v {
+      position: absolute;
+      top: 0;
+      left: 5px;
+      right: 0;
+      height: 5px;
+      cursor: ns-resize;
+      z-index: 1;
+    }
+
+    .resize-v:hover, .resize-v.dragging {
+      background: #cba6f7;
+      opacity: 0.5;
     }
 
     .panel-header {
@@ -46,6 +84,7 @@ type PanelView = 'state' | 'diff';
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
+      margin-top: 5px;
     }
 
     .panel-title {
@@ -118,6 +157,16 @@ type PanelView = 'state' | 'diff';
     .history-item.active {
       background: #313244;
       color: #cdd6f4;
+    }
+
+    .route-badge {
+      display: block;
+      font-size: 10px;
+      color: #6c7086;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 1px 6px 3px;
     }
 
     /* ── State view ──────────────────────────────────────────── */
@@ -233,7 +282,11 @@ type PanelView = 'state' | 'diff';
   `],
   template: `
     @if (mode() === 'viewing') {
-      <div class="panel">
+      <div class="panel" [style.width.px]="panelWidth()" [style.height.px]="panelHeight()">
+
+        <div class="resize-v" [class.dragging]="draggingV()" (mousedown)="startResizeV($event)"></div>
+        <div class="resize-h" [class.dragging]="draggingH()" (mousedown)="startResizeH($event)"></div>
+
         <div class="panel-header">
           <span class="panel-title">{{ selectedStore() }}</span>
 
@@ -249,6 +302,9 @@ type PanelView = 'state' | 'diff';
         <div class="panel-body">
           <div class="history-list">
             @for (snap of selectedHistory(); track snap.timestamp; let i = $index) {
+              @if (snap.route && snap.route !== selectedHistory()[i - 1]?.route) {
+                <span class="route-badge" [title]="snap.route">{{ snap.route }}</span>
+              }
               <div
                 class="history-item"
                 [class.active]="activeIndex() === i"
@@ -326,8 +382,11 @@ export class StellarOverlayComponent {
   readonly panelView = signal<PanelView>('state');
   readonly selectedStore = signal<string | null>(null);
   readonly selectedIndex = signal<number>(-1);
+  readonly panelWidth = signal(DEFAULT_WIDTH);
+  readonly panelHeight = signal(DEFAULT_HEIGHT);
+  readonly draggingH = signal(false);
+  readonly draggingV = signal(false);
 
-  // Resolves -1 (latest) to the actual last index
   readonly activeIndex = computed(() => {
     const idx = this.selectedIndex();
     const len = this.selectedHistory().length;
@@ -357,6 +416,44 @@ export class StellarOverlayComponent {
   });
 
   readonly fmt = formatValue;
+
+  startResizeH(event: MouseEvent): void {
+    event.preventDefault();
+    this.draggingH.set(true);
+    const startX = event.clientX;
+    const startWidth = this.panelWidth();
+
+    const onMove = (e: MouseEvent) => {
+      const delta = startX - e.clientX;
+      this.panelWidth.set(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth + delta)));
+    };
+    const onUp = () => {
+      this.draggingH.set(false);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }
+
+  startResizeV(event: MouseEvent): void {
+    event.preventDefault();
+    this.draggingV.set(true);
+    const startY = event.clientY;
+    const startHeight = this.panelHeight();
+
+    const onMove = (e: MouseEvent) => {
+      const delta = startY - e.clientY;
+      this.panelHeight.set(Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, startHeight + delta)));
+    };
+    const onUp = () => {
+      this.draggingV.set(false);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }
 
   onFabClick(): void {
     if (this.mode() === 'closed' || this.mode() === 'viewing') {
