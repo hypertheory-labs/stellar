@@ -1,5 +1,5 @@
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { withStellarDevtools } from '@hypertheory/stellardevtools';
+import { withStellarDevtools, sanitizeConfig } from '@hypertheory/stellardevtools';
 
 export interface Book {
   id: number;
@@ -36,7 +36,11 @@ export const BooksStore = signalStore(
     searchQuery: '',
     loading: false,
   }),
-  withStellarDevtools('BooksStore'),
+  withStellarDevtools('BooksStore', {
+    sanitize: sanitizeConfig<BooksState>({
+      searchQuery: 'omitted',
+    }),
+  }),
   withMethods(store => ({
     select(id: number) { patchState(store, { selectedId: id }); },
     clearSelection() { patchState(store, { selectedId: null }); },

@@ -4,7 +4,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "@hypertheory/sanitize": ["./dist/hypertheory/sanitize"],
+      "@hypertheory/sanitize": ["./projects/hypertheory/sanitize/src/public-api.ts"],
       "@hypertheory/stellardevtools": ["./projects/hypertheory/stellardevtools/src/public-api.ts"]
     },
     "strict": true,

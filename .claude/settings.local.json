@@ -16,7 +16,15 @@
       "Skill(update-config)",
       "Skill(update-config:*)",
       "Bash(node_modules/.bin/ng generate:*)",
-      "Bash(node ../../../node_modules/.bin/vitest run --config vitest.config.ts)"
+      "Bash(node ../../../node_modules/.bin/vitest run --config vitest.config.ts)",
+      "Bash(npx ng:*)",
+      "Bash(python3 -c \"import sys,json; a=json.load\\(sys.stdin\\); print\\(json.dumps\\(a[''''projects''''][''''demo''''], indent=2\\)\\)\")",
+      "Bash(ls /Users/jeffrygonzalez/work/stellar/postcss*)",
+      "Bash(ls /Users/jeffrygonzalez/work/stellar/tailwind*)",
+      "Bash(node -e \":*)",
+      "Bash(node -e \"const d=require\\(''''/dev/stdin''''\\); const keys=[...Object.keys\\(d.dependencies||{}\\), ...Object.keys\\(d.devDependencies||{}\\)].filter\\(k=>k.includes\\(''''tailwind''''\\)||k.includes\\(''''daisy''''\\)||k.includes\\(''''postcss''''\\)\\); keys.forEach\\(k=>console.log\\(k, \\(d.dependencies||{}\\)[k]||\\(d.devDependencies||{}\\)[k]\\)\\)\")",
+      "Bash(python3 -c \":*)",
+      "Bash(grep -r \"tailwind\\\\|postcss\" /Users/jeffrygonzalez/work/stellar/node_modules/@angular/build/src/tools/ --include=*.js -l)"
     ]
   }
 }

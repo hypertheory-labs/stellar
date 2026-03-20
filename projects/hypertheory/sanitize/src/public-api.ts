@@ -2,5 +2,5 @@
  * Public API Surface of @hypertheory/sanitize
  */
 
-export { sanitized } from './lib/sanitation';
-export type { SanitizationConfig, Sanitized } from './lib/sanitation';
+export { sanitized, sanitizeConfig, arrayOf, keepFirst, keepLast, truncate, replace } from './lib/sanitation';
+export type { SanitizationConfig, Sanitized, SanitizationHandler } from './lib/sanitation';
