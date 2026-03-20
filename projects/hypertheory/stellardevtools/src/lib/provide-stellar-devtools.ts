@@ -1,20 +1,14 @@
 import {
-  ApplicationRef,
-  createComponent,
-  EnvironmentInjector,
   EnvironmentProviders,
   inject,
   makeEnvironmentProviders,
   provideEnvironmentInitializer,
 } from '@angular/core';
-import { StellarOverlayComponent } from './stellar-overlay.component';
 import { StellarRegistryService } from './stellar-registry.service';
 
 export function provideStellarDevtools(): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideEnvironmentInitializer(() => {
-      const appRef = inject(ApplicationRef);
-      const envInjector = inject(EnvironmentInjector);
       const registry = inject(StellarRegistryService);
 
       (window as any).__stellarDevtools = {
@@ -31,12 +25,6 @@ export function provideStellarDevtools(): EnvironmentProviders {
           return { from: h[h.length - 2], to: h[h.length - 1] };
         },
       };
-
-      const overlayRef = createComponent(StellarOverlayComponent, {
-        environmentInjector: envInjector,
-      });
-      document.body.appendChild(overlayRef.location.nativeElement);
-      appRef.attachView(overlayRef.hostView);
     }),
   ]);
 }

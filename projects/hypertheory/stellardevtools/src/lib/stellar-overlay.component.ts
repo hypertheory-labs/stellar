@@ -33,7 +33,7 @@ const MAX_HEIGHT = 900;
     }
 
     /* ── Panel ───────────────────────────────────────────────── */
-    .panel {
+    .stellar-panel {
       background: #1e1e2e;
       color: #cdd6f4;
       border: 1px solid #45475a;
@@ -45,7 +45,7 @@ const MAX_HEIGHT = 900;
     }
 
     /* Left-edge horizontal resize handle */
-    .resize-h {
+    .stellar-resize-h {
       position: absolute;
       left: 0;
       top: 0;
@@ -55,13 +55,13 @@ const MAX_HEIGHT = 900;
       z-index: 1;
     }
 
-    .resize-h:hover, .resize-h.dragging {
+    .stellar-resize-h:hover, .stellar-resize-h.stellar-dragging {
       background: #cba6f7;
       opacity: 0.5;
     }
 
     /* Top-edge vertical resize handle */
-    .resize-v {
+    .stellar-resize-v {
       position: absolute;
       top: 0;
       left: 5px;
@@ -71,12 +71,12 @@ const MAX_HEIGHT = 900;
       z-index: 1;
     }
 
-    .resize-v:hover, .resize-v.dragging {
+    .stellar-resize-v:hover, .stellar-resize-v.stellar-dragging {
       background: #cba6f7;
       opacity: 0.5;
     }
 
-    .panel-header {
+    .stellar-panel-header {
       padding: 8px 12px;
       background: #181825;
       border-bottom: 1px solid #45475a;
@@ -87,20 +87,20 @@ const MAX_HEIGHT = 900;
       margin-top: 5px;
     }
 
-    .panel-title {
+    .stellar-panel-title {
       flex: 1;
       font-weight: bold;
       color: #cba6f7;
     }
 
-    .view-toggle {
+    .stellar-view-toggle {
       display: flex;
       border: 1px solid #45475a;
       border-radius: 4px;
       overflow: hidden;
     }
 
-    .view-toggle button {
+    .stellar-view-toggle button {
       background: none;
       border: none;
       color: #6c7086;
@@ -110,12 +110,12 @@ const MAX_HEIGHT = 900;
       font-size: 12px;
     }
 
-    .view-toggle button.active {
+    .stellar-view-toggle button.stellar-active {
       background: #313244;
       color: #cdd6f4;
     }
 
-    .icon-btn {
+    .stellar-icon-btn {
       background: none;
       border: none;
       color: #a6adc8;
@@ -126,19 +126,19 @@ const MAX_HEIGHT = 900;
       font-size: 12px;
     }
 
-    .icon-btn:hover {
+    .stellar-icon-btn:hover {
       background: #313244;
       color: #cdd6f4;
     }
 
-    .panel-body {
+    .stellar-panel-body {
       display: flex;
       flex: 1;
       overflow: hidden;
     }
 
     /* ── History list ────────────────────────────────────────── */
-    .history-list {
+    .stellar-history-list {
       width: 150px;
       border-right: 1px solid #45475a;
       overflow-y: auto;
@@ -146,7 +146,7 @@ const MAX_HEIGHT = 900;
       flex-shrink: 0;
     }
 
-    .history-item {
+    .stellar-history-item {
       padding: 4px 6px;
       border-radius: 4px;
       cursor: pointer;
@@ -154,12 +154,12 @@ const MAX_HEIGHT = 900;
       font-size: 11px;
     }
 
-    .history-item.active {
+    .stellar-history-item.stellar-active {
       background: #313244;
       color: #cdd6f4;
     }
 
-    .route-badge {
+    .stellar-route-badge {
       display: block;
       font-size: 10px;
       color: #6c7086;
@@ -170,7 +170,7 @@ const MAX_HEIGHT = 900;
     }
 
     /* ── State view ──────────────────────────────────────────── */
-    .state-view {
+    .stellar-state-view {
       flex: 1;
       overflow: auto;
       padding: 8px;
@@ -183,69 +183,69 @@ const MAX_HEIGHT = 900;
     }
 
     /* ── Diff view ───────────────────────────────────────────── */
-    .diff-view {
+    .stellar-diff-view {
       flex: 1;
       overflow: auto;
       padding: 8px;
     }
 
-    .diff-empty {
+    .stellar-diff-empty {
       color: #6c7086;
       padding: 8px;
       font-size: 12px;
     }
 
-    .diff-no-changes {
+    .stellar-diff-no-changes {
       color: #a6e3a1;
       padding: 8px;
       font-size: 12px;
     }
 
-    .diff-table {
+    .stellar-diff-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
     }
 
-    .diff-table td {
+    .stellar-diff-table td {
       padding: 3px 6px;
       vertical-align: top;
     }
 
-    .diff-path {
+    .stellar-diff-path {
       color: #89b4fa;
       white-space: nowrap;
       padding-right: 12px;
     }
 
-    .diff-kind {
+    .stellar-diff-kind {
       white-space: nowrap;
       padding-right: 8px;
       font-size: 11px;
     }
 
-    .diff-values {
+    .stellar-diff-values {
       color: #cdd6f4;
       word-break: break-all;
     }
 
-    .kind-changed { color: #f9e2af; }
-    .kind-added   { color: #a6e3a1; }
-    .kind-removed { color: #f38ba8; }
+    .stellar-kind-changed { color: #f9e2af; }
+    .stellar-kind-added   { color: #a6e3a1; }
+    .stellar-kind-removed { color: #f38ba8; }
 
-    .old-val { color: #f38ba8; }
-    .new-val { color: #a6e3a1; }
-    .arrow   { color: #6c7086; padding: 0 4px; }
+    .stellar-old-val { color: #f38ba8; }
+    .stellar-new-val { color: #a6e3a1; }
+    .stellar-arrow   { color: #6c7086; padding: 0 4px; }
 
     /* ── Speed dial ──────────────────────────────────────────── */
-    .dial {
+    .stellar-dial {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 6px;
     }
 
-    .store-chip {
+    .stellar-store-chip {
       background: #1e1e2e;
       color: #cdd6f4;
       border: 1px solid #45475a;
@@ -256,15 +256,15 @@ const MAX_HEIGHT = 900;
       transition: background 0.1s;
     }
 
-    .store-chip:hover { background: #313244; }
+.stellar-store-chip:hover { background: #313244; }
 
-    .no-stores {
+    .stellar-no-stores {
       color: #6c7086;
       font-size: 11px;
       padding: 4px 10px;
     }
 
-    .fab {
+    .stellar-fab {
       background: #cba6f7;
       color: #1e1e2e;
       border: none;
@@ -278,36 +278,36 @@ const MAX_HEIGHT = 900;
       white-space: nowrap;
     }
 
-    .fab:hover { background: #d9b8ff; }
+    .stellar-fab:hover { background: #d9b8ff; }
   `],
   template: `
     @if (mode() === 'viewing') {
-      <div class="panel" [style.width.px]="panelWidth()" [style.height.px]="panelHeight()">
+      <div class="stellar-panel" [style.width.px]="panelWidth()" [style.height.px]="panelHeight()">
 
-        <div class="resize-v" [class.dragging]="draggingV()" (mousedown)="startResizeV($event)"></div>
-        <div class="resize-h" [class.dragging]="draggingH()" (mousedown)="startResizeH($event)"></div>
+        <div class="stellar-resize-v" [class.stellar-dragging]="draggingV()" (mousedown)="startResizeV($event)"></div>
+        <div class="stellar-resize-h" [class.stellar-dragging]="draggingH()" (mousedown)="startResizeH($event)"></div>
 
-        <div class="panel-header">
-          <span class="panel-title">{{ selectedStore() }}</span>
+        <div class="stellar-panel-header">
+          <span class="stellar-panel-title">{{ selectedStore() }}</span>
 
-          <div class="view-toggle">
-            <button [class.active]="panelView() === 'state'" (click)="panelView.set('state')">State</button>
-            <button [class.active]="panelView() === 'diff'" (click)="panelView.set('diff')">Diff</button>
+          <div class="stellar-view-toggle">
+            <button [class.stellar-active]="panelView() === 'state'" (click)="panelView.set('state')">State</button>
+            <button [class.stellar-active]="panelView() === 'diff'" (click)="panelView.set('diff')">Diff</button>
           </div>
 
-          <button class="icon-btn" (click)="goToPicker()">← stores</button>
-          <button class="icon-btn" (click)="close()">✕</button>
+          <button class="stellar-icon-btn" (click)="goToPicker()">← stores</button>
+          <button class="stellar-icon-btn" (click)="close()">✕</button>
         </div>
 
-        <div class="panel-body">
-          <div class="history-list">
+        <div class="stellar-panel-body">
+          <div class="stellar-history-list">
             @for (snap of selectedHistory(); track snap.timestamp; let i = $index) {
               @if (snap.route && snap.route !== selectedHistory()[i - 1]?.route) {
-                <span class="route-badge" [title]="snap.route">{{ snap.route }}</span>
+                <span class="stellar-route-badge" [title]="snap.route">{{ snap.route }}</span>
               }
               <div
-                class="history-item"
-                [class.active]="activeIndex() === i"
+                class="stellar-history-item"
+                [class.stellar-active]="activeIndex() === i"
                 (click)="selectSnapshot(i)">
                 #{{ i + 1 }} &nbsp;{{ snap.timestamp | date:'HH:mm:ss' }}
               </div>
@@ -315,38 +315,38 @@ const MAX_HEIGHT = 900;
           </div>
 
           @if (panelView() === 'state') {
-            <div class="state-view">
+            <div class="stellar-state-view">
               <pre>{{ selectedState() }}</pre>
             </div>
           } @else {
-            <div class="diff-view">
+            <div class="stellar-diff-view">
               @if (diffEntries() === null) {
-                <div class="diff-empty">Initial state — no previous snapshot to compare.</div>
+                <div class="stellar-diff-empty">Initial state — no previous snapshot to compare.</div>
               } @else if (diffEntries()!.length === 0) {
-                <div class="diff-no-changes">✓ No changes from previous snapshot.</div>
+                <div class="stellar-diff-no-changes">✓ No changes from previous snapshot.</div>
               } @else {
-                <table class="diff-table">
+                <table class="stellar-diff-table">
                   @for (entry of diffEntries()!; track entry.path) {
                     <tr>
-                      <td class="diff-path">{{ entry.path }}</td>
-                      <td class="diff-kind">
+                      <td class="stellar-diff-path">{{ entry.path }}</td>
+                      <td class="stellar-diff-kind">
                         @if (entry.kind === 'changed') {
-                          <span class="kind-changed">~</span>
+                          <span class="stellar-kind-changed">~</span>
                         } @else if (entry.kind === 'added') {
-                          <span class="kind-added">+</span>
+                          <span class="stellar-kind-added">+</span>
                         } @else {
-                          <span class="kind-removed">−</span>
+                          <span class="stellar-kind-removed">−</span>
                         }
                       </td>
-                      <td class="diff-values">
+                      <td class="stellar-diff-values">
                         @if (entry.kind === 'changed') {
-                          <span class="old-val">{{ fmt(entry.oldValue) }}</span>
-                          <span class="arrow">→</span>
-                          <span class="new-val">{{ fmt(entry.newValue) }}</span>
+                          <span class="stellar-old-val">{{ fmt(entry.oldValue) }}</span>
+                          <span class="stellar-arrow">→</span>
+                          <span class="stellar-new-val">{{ fmt(entry.newValue) }}</span>
                         } @else if (entry.kind === 'added') {
-                          <span class="new-val">{{ fmt(entry.newValue) }}</span>
+                          <span class="stellar-new-val">{{ fmt(entry.newValue) }}</span>
                         } @else {
-                          <span class="old-val">{{ fmt(entry.oldValue) }}</span>
+                          <span class="stellar-old-val">{{ fmt(entry.oldValue) }}</span>
                         }
                       </td>
                     </tr>
@@ -359,18 +359,18 @@ const MAX_HEIGHT = 900;
       </div>
     }
 
-    <div class="dial">
+    <div class="stellar-dial">
       @if (mode() === 'picking') {
         @if (stores().length === 0) {
-          <span class="no-stores">No stores registered</span>
+          <span class="stellar-no-stores">No stores registered</span>
         }
         @for (store of stores(); track store.name) {
-          <button class="store-chip" (click)="selectStore(store.name)">
+          <button class="stellar-store-chip" (click)="selectStore(store.name)">
             {{ store.name }}
           </button>
         }
       }
-      <button class="fab" (click)="onFabClick()">✦ Stellar</button>
+      <button class="stellar-fab" (click)="onFabClick()">✦ Stellar</button>
     </div>
   `,
 })

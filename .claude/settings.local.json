@@ -28,7 +28,8 @@
       "WebFetch(domain:ngrx.io)",
       "WebSearch",
       "Bash(grep -r \"withFeature\\\\|SignalStoreFeature\\\\|EmptyFeature\" /Users/jeffrygonzalez/work/stellar/node_modules/@ngrx/signals/src/ --include=*.d.ts -l)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(grep -l \"\\\\.dial\\\\b\\\\|\\\\.store-chip\\\\b\" /Users/jeffrygonzalez/work/stellar/node_modules/daisyui/components/*.css)"
     ]
   }
 }

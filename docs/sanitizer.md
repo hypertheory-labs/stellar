@@ -1,5 +1,13 @@
 # State Sanitization — Design Thinking
 
+> **Status: Historical.** This document captures early design exploration. The implementation
+> diverged from the function-call style described here (`redact()`, `omit()`, `keepLast4()`)
+> in favour of string literal named rules (`'redacted'`, `'omitted'`, `'lastFour'`). See
+> `docs/sanitize-api-design.md` for the current API reference and `docs/notes.md` for why
+> the `satisfies`-keyed handler map approach was chosen. The reasoning in this document about
+> *why* to sanitize and *what* to consider is still valid — only the proposed API surface
+> is superseded.
+
 ## The Problem
 
 State in a devtools overlay (and especially in any export/share/WebRTC feature) may

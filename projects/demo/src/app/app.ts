@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
+import { StellarOverlayComponent } from '@hypertheory/stellardevtools';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterLink, RouterOutlet, RouterLinkActive],
+  imports: [RouterLink, RouterOutlet, RouterLinkActive, StellarOverlayComponent],
   template: `
     <div class="min-h-screen bg-base-100">
       <div class="navbar bg-base-200 shadow-sm px-6">
@@ -27,6 +28,8 @@ import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
         Open <strong>✦ Stellar</strong> in the bottom-right corner to inspect store state.
       </footer>
     </div>
+
+    <stellar-overlay />
   `,
 })
 export class App {}

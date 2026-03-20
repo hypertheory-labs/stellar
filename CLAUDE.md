@@ -58,42 +58,69 @@ pattern is agreed on. Core is minimal and stable; plugins extend the `window.__s
 surface with namespaced data. Each plugin carries its own config — this is the main argument
 against defaulting anything in.
 
-**Sanitization as a standalone package.** `@hypertheory/sanitize` is designed to be usable
-independently of the devtools — event sourcing pipelines, logging, etc. `withStateSanitization()`
-in the devtools is a thin adapter. The prototype lives in `docs/sanitation.ts`.
+**Sanitization as a standalone package.** `@hypertheory/sanitize` **is implemented** as an
+independent library in this monorepo. It has zero dependency on the devtools — usable in event
+sourcing pipelines, logging, etc. `withStellarDevtools` wires it in directly (not via a separate
+`withStateSanitization()` plugin — that plugin abstraction is still a future design question).
 
-**The target snapshot format** (designed, not yet implemented):
-```ts
-interface StoreSnapshot {
-  storeName: string;
-  capturedAt: string;             // ISO timestamp
-  sourceHint?: string;            // file path — AI resolves types from source
-  typeDefinition?: string;        // inline TS interface if registered/generated
-  state: Record<string, unknown>; // post-sanitization values
-  inferredShape: ShapeMap;        // value-level type inference, always present
-  recentDiffs: Diff[];
-  trigger?: string;               // what caused this snapshot
-}
-```
-These slots need to be in the registry model from the start.
+**The target snapshot format** — partially implemented. Current `StateSnapshot` in
+`projects/hypertheory/stellardevtools/src/lib/models.ts` has `storeName`, `timestamp`,
+`state`, and `route`. The following slots from the AI Accessibility design are **not yet
+implemented** and must be added before the format is considered stable:
+- `inferredShape: ShapeMap` — value-level type inference (should be in v1)
+- `sourceHint?: string` — file path hint for AI type resolution
+- `typeDefinition?: string` — inline TS interface
+- `trigger?: string` — what caused the snapshot
+
+Do not add features that assume the current minimal snapshot format is final. The full
+target shape is in `docs/ai-accessibility.md`.
 
 ---
 
 ## Current State of the Sanitizer
 
-The prototype is `docs/sanitation.ts` with tests in `docs/sanitation.spec.ts`. It is not yet
-in the library. Key design decisions made:
+`@hypertheory/sanitize` is **fully implemented** and live in the library at
+`projects/hypertheory/sanitize/src/lib/sanitation.ts`. The prototype at `docs/sanitation.ts`
+is now a historical artifact — the library is the source of truth.
 
-- String literal operators (`'omitted'`, `'lastFour'`, `'mask'`) via a `satisfies`-keyed handler
-  map — do not replace `satisfies` with a type annotation, it breaks key narrowing (see `docs/notes.md`)
-- Single-element tuple `[config]` for array fields — signals "map this config over every element"
-- Nested object configs recurse automatically
+### What's shipped
 
-**Open decisions** (from `overview.md` agenda):
-1. Parameterized operators (`keepFirst(n)`, `truncate(n)`) — leaning curried functions, needs decision
-2. `[config]` tuple vs explicit `arrayOf()` combinator — needs decision before public API
-3. Reconcile string-literal implementation with function-call style in `sanitizer.md`
-4. Tagged-class approach for cross-cutting policy-based sanitization (Phase X — see `ai-accessibility.md`)
+**Tier 1 — Named rules** (string literals via `satisfies`-keyed handler map):
+- Primitives: `'omitted'`, `'redacted'`, `'lastFour'`, `'firstFour'`, `'masked'`, `'hashed'`, `'email'`
+- Semantic aliases: `'creditCard'`, `'debitCard'`, `'phoneNumber'`, `'ssn'`, `'password'`, `'apiKey'`, `'token'`, `'secret'`, `'emailAddress'`
+
+**Tier 2 — Parameterized operators** (curried functions returning `SanitizationHandler`):
+- `keepFirst(n)`, `keepLast(n)`, `truncate(n)`, `replace(fn)`
+
+**Structural**: `arrayOf(config)` combinator — canonical form. Single-element tuple `[config]`
+still supported for compatibility but `arrayOf()` is preferred.
+
+**Zero-config layer**: `autoRedactConfig(state)` — scans top-level field names against the
+sensitive-field blocklist and returns a `SanitizationConfig` automatically. `withStellarDevtools`
+calls this on every state snapshot and merges the result with any explicit `sanitize` option
+(explicit config always wins via spread: `{ ...autoRedactConfig(raw), ...options.sanitize }`).
+
+**Typed helper**: `sanitizeConfig<T>(config)` — identity function at runtime, provides
+`SanitizationConfig<T>` typing at the call site. Re-exported from `@hypertheory/stellardevtools`
+so consumers don't need a separate import.
+
+### Key design decisions (do not revisit without good reason)
+
+- **`satisfies` on `sanitizationHandlers`** — do not replace with a type annotation. It
+  preserves literal key types so `SanitizationRule` narrows correctly. See `docs/notes.md`.
+- **`arrayOf()` over tuple** — legibility at the trust boundary. The `[config]` form still
+  works but `arrayOf()` is canonical.
+- **String literals for named rules, functions for parameterized** — the boundary is clear.
+  Tier 3 (`createSanitizer()` factory) will promote custom functions back to string literals.
+
+### Still to do
+
+- **Tier 3**: `createSanitizer()` factory for domain-specific aliases. See `overview.md` backlog.
+- **`@hypertheory/sensitive`**: tagged-class approach for cross-cutting policy-based sanitization.
+  See Phase X discussion in `docs/ai-accessibility.md`.
+- **Reconcile `docs/sanitizer.md`**: early design doc used function-call style (`redact()`, `omit()`).
+  The implementation went with string literals. That doc should be treated as historical —
+  `docs/sanitize-api-design.md` is the current design reference.
 
 ---
 
@@ -116,15 +143,39 @@ in the library. Key design decisions made:
 
 ---
 
+## Current Implementation Status
+
+### `@hypertheory/sanitize` — DONE
+`projects/hypertheory/sanitize/src/lib/sanitation.ts` + full test suite.
+All Tier 1 (named rules), Tier 2 (parameterized operators), `arrayOf()`, `sanitizeConfig<T>()`,
+and `autoRedactConfig()` are implemented and tested.
+
+### `@hypertheory/stellardevtools` — Functional, snapshot format incomplete
+- `withStellarDevtools(name, { sanitize? })` — hooks into NgRx Signal Store, records sanitized state
+- `provideStellarDevtools()` — sets up `window.__stellarDevtools` API (`snapshot`, `history`, `diff`)
+- `StellarOverlayComponent` — visual overlay (panel, history list, diff view, resize handles)
+- All CSS classes prefixed `stellar-*` to avoid consumer framework collisions (learned the hard way — DaisyUI owns `.fab`)
+- Overlay is mounted via `<stellar-overlay />` in the consumer's app template (NOT via `createComponent`/`document.body.appendChild` — that approach broke event handling)
+
+### Demo app — `projects/demo/`
+- Tailwind CSS v4 + DaisyUI v5 (dark theme)
+- PostCSS config MUST be `.postcssrc.json` at workspace root — Angular only reads JSON format
+- Two routes: `/` (home with counter/books/user stores) and `/sanitize` (demonstrates every sanitization operator)
+- `SensitiveDataStore` in `src/app/sensitive-data.store.ts` — canonical demo of all operators
+
+### `window.__stellarDevtools` (Level 2 AI Accessibility)
+Implemented. `snapshot()`, `history(name, n)`, `diff(name)` are live.
+
 ## Key Files
 
 | File | Purpose |
 |---|---|
 | `docs/ai-accessibility.md` | Central design document — read first |
-| `docs/sanitation.ts` | Sanitization prototype (not yet in library) |
-| `docs/sanitation.spec.ts` | Tests for the prototype |
-| `docs/sanitizer.md` | Sanitization design doc (needs reconciling with implementation) |
-| `docs/notes.md` | Implementation notes — critical `satisfies` explanation |
+| `docs/sanitize-api-design.md` | Current sanitize API design reference |
+| `docs/sanitizer.md` | **Historical** — early design doc, uses old function-call style (`redact()`, `omit()`). Superseded by the string-literal implementation. |
+| `docs/sanitation.ts` | **Historical** — prototype, superseded by the library |
+| `docs/notes.md` | Critical `satisfies` explanation + `arrayOf()` design notes |
 | `overview.md` | Agenda, backlog, current open questions |
-| `projects/hypertheory/stellardevtools/src/lib/` | The actual library |
-| `projects/demo/src/app/` | Demo app with example stores |
+| `projects/hypertheory/sanitize/src/lib/sanitation.ts` | The sanitize library |
+| `projects/hypertheory/stellardevtools/src/lib/` | The devtools library |
+| `projects/demo/src/app/` | Demo app |

@@ -2,29 +2,26 @@
 
 ---
 
-## 📋 Tomorrow's Agenda
+## ✅ Resolved — formerly on the agenda
 
-### 1. Sanitization — likely scenarios audit
-Go through a list of real-world "things developers actually put in state that they shouldn't expose" and verify the current `sanitation.ts` implementation covers them. Known candidates: passwords, tokens/API keys, SSNs, credit card numbers, email addresses, phone numbers, dates of birth, street addresses, internal IDs. Check what's covered by existing operators (`omitted`, `lastFour`, `mask`) and what's missing.
+- **Parameterized operators**: Implemented as curried functions (`keepFirst(n)`, `keepLast(n)`, `truncate(n)`, `replace(fn)`) returning `SanitizationHandler`. Mixed freely with Tier 1 string rules.
+- **Array handling**: `arrayOf(config)` is the canonical form. Single-element tuple `[config]` still works for compatibility. Decision: legibility at the trust boundary wins.
+- **`@hypertheory/sanitize` as standalone**: Confirmed — implemented as an independent library in the monorepo. Zero devtools dependency.
+- **Convention-based auto-redaction**: `autoRedactConfig()` implemented. Called automatically in `withStellarDevtools`, merged with explicit `sanitize` option (explicit wins).
+- **String literals vs function-call style**: String literals for named rules is correct. `docs/sanitizer.md` is now a historical artifact — `docs/sanitize-api-design.md` is the current design reference.
+- **Sanitization demo route**: `/sanitize` route in the demo app demonstrates every operator with a `SensitiveDataStore`.
 
-### 2. Parameterized operators — design decision
-The current `sanitizationHandlers` object handles parameter-free operators elegantly (add a key, type propagates automatically via `satisfies`). But some operators need runtime arguments: `keepFirst(n)`, `truncate(n)`, `replace(fn)`. Two options to decide between:
-- **Curried functions** that return a `(v: string) => string` handler, used directly in the config alongside string literals — requires `SanitizationConfig<T>` to also accept function values as valid rules
-- **Pre-baked variants** in `sanitizationHandlers` (`keepFirst8`, `keepFirst16`, etc.) — ugly but keeps the type simple
+## 📋 Next Up
 
-Leaning toward curried functions — discuss and decide.
-
-### 3. Array handling convention — tuple vs. explicit combinator
-The `[config]` single-element tuple convention for arrays is clever but not immediately legible to someone reading it cold. An explicit `arrayOf({ email: 'omitted' })` combinator might be more discoverable. Decide before this becomes a public API.
-
-### 4. Plugin architecture — where's the line?
+### Plugin architecture — where's the line?
 The `provideStellarDevtools(withNgrxSignalStoreTools(), withHttpTrafficMonitoring(), ...)` pattern is agreed on in principle. Still need to decide: which plugins, if any, are so universally needed that leaving them out feels like a footgun? Key argument against any defaults: each `withXXX()` carries its own config, so defaulting anything in forces opinionated defaults or pushes config onto `provideStellarDevtools` itself.
 
-### 5. `@hypertheory/sanitize` as a standalone package
-Confirm that the sanitization library lives independently of the devtools — usable in event sourcing pipelines, logging, etc. `withStateSanitization()` in stellardevtools is then just a thin adapter. Decide on package name and whether it's a separate repo or a monorepo sibling.
+### Snapshot format — complete the AI Accessibility slots
+Current `StateSnapshot` only has `storeName`, `timestamp`, `state`, `route`. Missing:
+- `inferredShape: ShapeMap` — should ship in v1 (zero cost to compute, high AI value)
+- `sourceHint?`, `typeDefinition?`, `trigger?` — later layers, but slots must exist in the model now
 
-### 6. Reconcile `sanitation.ts` with `sanitizer.md`
-The implementation uses string literals (`'omitted'`, `'lastFour'`) while the design doc describes function-call style operators (`omit()`, `redact()`). The string literal approach is probably right for the finite set — confirm this, update the design doc to match the implementation direction, and note where function-call style would still be needed (parameterized operators only).
+Do not add export/share features until `inferredShape` is at minimum present.
 
 ---
 
@@ -128,6 +125,26 @@ withStellarDevtools('UserStore', {
 })
 ```
 The distinction between `omit` (remove entirely) and `redact` (transform to a safe representation) is meaningful — a masked credit card number is still useful context; an absent one isn't. This pattern also has legs in event sourcing contexts where the same problem (PII in recorded events) exists. Worth designing as a standalone composable utility that stellardevtools consumes rather than baking it in — could be its own small package.
+
+---
+
+### Production-mode gating of the overlay
+
+Switching to the `<stellar-overlay />` selector pattern (vs. the earlier `createComponent` + `document.body.appendChild` approach) means the consumer controls when and where the overlay is mounted. This opens a real question: how does a library user exclude the overlay from production builds without forking their `app.ts`?
+
+A few dimensions to design around:
+
+**Visual overlay vs. the `window.__stellarDevtools` API are different things.** Some teams legitimately want the API surface available in production (or a staging environment) for headless tooling — AI assistants, automated monitoring, support tooling — while not wanting the visual overlay at all. The two should be independently controllable.
+
+**Options worth evaluating:**
+- `isDevMode()` guard inside `StellarOverlayComponent` itself — simplest, no consumer effort, but hardcodes Angular's definition of "dev". Doesn't cover the "I want the API in prod" case.
+- A `disableInProduction` option on `provideStellarDevtools()` — lets the consumer override the default, but requires them to wire it up.
+- Separate `provideDevOnlyStellarDevtools()` / `provideStellarDevtools()` providers — consumer uses environment-conditional provider registration (Angular's standard pattern), full tree-shaking, nothing ships in the prod bundle if they choose it. Most idiomatic Angular; no magic in the library.
+- A `headless: true` option — renders nothing in the UI but still wires up `window.__stellarDevtools`. Useful for the "API in prod" use case.
+
+The likely end state is probably: `provideStellarDevtools()` registers the API only; `StellarOverlayComponent` is the optional UI layer, and consumers wrap it with whatever environment guard fits their deployment model. `isDevMode()` inside the component can serve as a safe default while still allowing override.
+
+**Don't decide this until the plugin architecture is settled** — the two are coupled. If each plugin is its own provider, the production gating question applies to each one independently.
 
 ---
 

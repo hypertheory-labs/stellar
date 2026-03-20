@@ -168,11 +168,17 @@ Both forms are supported for compatibility, but `arrayOf()` is the canonical sty
   (string) or a `SanitizationHandler` function; the factory promotes them all to string
   aliases with full type safety.
 
-- **Convention-based auto-redaction** — zero-config layer that auto-redacts fields whose
-  names match a built-in blocklist (`password`, `token`, `apiKey`, etc.) without explicit
-  configuration. Layered on top of the explicit config; explicit config takes precedence.
-
 - **`@hypertheory/sensitive`** — a companion package for runtime-visible tagging of
   sensitive data using tagged classes (Effect-style `_tag` pattern). Sanitization rules
   could be derived automatically from tags. See `docs/ai-accessibility.md` and
   `overview.md` backlog.
+
+## ✅ Implemented
+
+- All Tier 1 named rules (primitives + semantic aliases)
+- All Tier 2 parameterized operators (`keepFirst`, `keepLast`, `truncate`, `replace`)
+- `arrayOf()` structural combinator (canonical; tuple form kept for compatibility)
+- `sanitizeConfig<T>()` typed helper — re-exported from `@hypertheory/stellardevtools`
+- **`autoRedactConfig(state)`** — zero-config layer scanning top-level field names against
+  the `SENSITIVE_FIELD_NAMES` set. Returns a `SanitizationConfig` that can be merged with
+  an explicit config (explicit wins). Wired into `withStellarDevtools` automatically.
