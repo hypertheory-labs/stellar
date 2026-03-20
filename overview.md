@@ -44,6 +44,45 @@ I would like to investigate whether a "Devtools" experience that runs in the bro
 
 ## Backlog / Parking Lot
 
+### User-defined semantic aliases in `@hypertheory/sanitize`
+The built-in handler map ships with a vocabulary of common sensitive data types (`creditCard`,
+`ssn`, `apiKey`, etc.). Domain-specific industries have their own conventions — insurance might
+need `policyNumber`, `claimNumber`; healthcare might need `npi`, `memberId`, `diagnosisCode`;
+finance might need `routingNumber`, `accountNumber`.
+
+Design a way for consumers to register custom aliases that extend `SanitizationRule` with their
+own keys, pointing at existing primitive operators or custom handlers. The key constraint: it
+must preserve the `satisfies`-based key narrowing so that custom aliases get the same
+autocomplete and type-safety as built-ins. Two likely approaches:
+- A `createSanitizer(customHandlers)` factory that returns a configured `sanitized` function
+  with an extended rule type
+- A standalone `extendHandlers(additions)` helper that merges into the type and returns a
+  new `sanitized` variant
+
+Leaning toward the factory approach. The API would look like:
+
+```ts
+const { sanitized } = createSanitizer({
+  policyNumber: 'redacted',        // alias pointing at a primitive
+  claimNumber:  'hashed',          // alias pointing at a primitive
+  memberId:     (v) => v.slice(-4), // custom handler function
+});
+
+// Result: sanitized() typed with built-ins + custom aliases,
+// full autocomplete, compile error if alias name is mistyped
+```
+
+Values can be either a primitive operator name (string literal) or a raw `(v: string) => string`
+handler — gives teams full flexibility without sacrificing type safety. The intent is that custom
+aliases are always defined in terms of primitives where possible, keeping semantics consistent and
+auditable. Raw handlers are the escape hatch, not the default.
+
+The design goal is to make the developer *think about what they're mapping to* — choosing
+`'redacted'` vs `'hashed'` for `policyNumber` is a deliberate decision about whether identity
+correlation matters. The API should make that choice visible, not hide it.
+
+---
+
 ### Plugin architecture for `provideStellarDevtools`
 Instead of a monolithic provider, adopt a plugin pattern mirroring Angular's own `provideRouter(withHashLocation(), withViewTransitions())`:
 

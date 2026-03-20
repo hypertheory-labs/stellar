@@ -1,0 +1,11 @@
+{
+  "name": "@hypertheory/sanitize",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
+  },
+  "sideEffects": false
+}

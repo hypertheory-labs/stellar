@@ -14,7 +14,9 @@
       "Bash(grep -E \"^ng$|^tsc$\")",
       "Bash(node_modules/.bin/tsc --noEmit -p tsconfig.json)",
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Bash(node_modules/.bin/ng generate:*)",
+      "Bash(node ../../../node_modules/.bin/vitest run --config vitest.config.ts)"
     ]
   }
 }

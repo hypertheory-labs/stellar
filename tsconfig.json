@@ -4,6 +4,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
+      "@hypertheory/sanitize": ["./dist/hypertheory/sanitize"],
       "@hypertheory/stellardevtools": ["./projects/hypertheory/stellardevtools/src/public-api.ts"]
     },
     "strict": true,
@@ -37,6 +38,12 @@
     },
     {
       "path": "./projects/demo/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/hypertheory/sanitize/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/hypertheory/sanitize/tsconfig.spec.json"
     }
   ]
 }

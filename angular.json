@@ -98,6 +98,32 @@
           "builder": "@angular/build:unit-test"
         }
       }
+    },
+    "@hypertheory/sanitize": {
+      "projectType": "library",
+      "root": "projects/hypertheory/sanitize",
+      "sourceRoot": "projects/hypertheory/sanitize/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/hypertheory/sanitize/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/hypertheory/sanitize/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/hypertheory/sanitize/tsconfig.spec.json"
+          }
+        }
+      }
     }
   }
 }
