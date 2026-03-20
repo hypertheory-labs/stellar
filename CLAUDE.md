@@ -110,6 +110,12 @@ in the library. Key design decisions made:
 
 ---
 
+## Repo Notes
+
+- `.claude/settings.json` has `bypassPermissions` enabled — intentional for solo dev. Remove or move to `settings.local.json` before adding collaborators.
+
+---
+
 ## Key Files
 
 | File | Purpose |

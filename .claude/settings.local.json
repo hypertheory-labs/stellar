@@ -7,7 +7,14 @@
       "Bash(npm pkg:*)",
       "Bash(ng build:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npx tsc:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(find /Users/jeffrygonzalez/work/stellar -name tsc -path */bin/*)",
+      "Bash(grep -E \"^ng$|^tsc$\")",
+      "Bash(node_modules/.bin/tsc --noEmit -p tsconfig.json)",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
     ]
   }
 }

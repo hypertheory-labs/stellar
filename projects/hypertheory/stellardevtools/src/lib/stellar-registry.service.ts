@@ -1,42 +1,39 @@
-import { inject, Injectable, signal, computed } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { StoreEntry, StateSnapshot } from './models';
+import { RegisterOptions, StoreEntry } from './models';
+import { StellarRegistry } from './stellar-registry';
 
 @Injectable({ providedIn: 'root' })
 export class StellarRegistryService {
   private router = inject(Router, { optional: true });
-  private _stores = signal<Record<string, StoreEntry>>({});
+  private core = new StellarRegistry();
 
-  readonly stores = computed(() => Object.values(this._stores()));
+  private _stores = signal<StoreEntry[]>([]);
+  readonly stores = this._stores.asReadonly();
 
-  register(name: string): void {
-    this._stores.update(s => ({
-      ...s,
-      [name]: { name, history: [] },
-    }));
+  constructor() {
+    this.core.subscribe(() => {
+      this._stores.set(this.core.getAllStores());
+    });
+  }
+
+  register(name: string, options: RegisterOptions = {}): void {
+    this.core.register(name, options);
   }
 
   recordState(name: string, state: Record<string, unknown>): void {
-    const snapshot: StateSnapshot = {
-      timestamp: Date.now(),
-      state,
-      route: this.router?.url ?? null,
-    };
-    this._stores.update(s => {
-      const entry = s[name];
-      if (!entry) return s;
-      return {
-        ...s,
-        [name]: { ...entry, history: [...entry.history, snapshot] },
-      };
-    });
+    this.core.recordState(name, state, { route: this.router?.url ?? null });
   }
 
   unregister(name: string): void {
-    this._stores.update(s => {
-      const next = { ...s };
-      delete next[name];
-      return next;
-    });
+    this.core.unregister(name);
+  }
+
+  getStore(name: string): StoreEntry | undefined {
+    return this.core.getStore(name);
+  }
+
+  getAllStores(): StoreEntry[] {
+    return this.core.getAllStores();
   }
 }
