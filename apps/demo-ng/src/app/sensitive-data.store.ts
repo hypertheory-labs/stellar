@@ -54,7 +54,7 @@ const initialState: SensitiveDataState = {
 
   paymentMethods: [
     { label: 'Visa ending 4567',       cardNumber: '4111111111114567', expiry: '12/27' },
-    { label: 'Mastercard ending 8888', cardNumber: '5500005555555559', expiry: '09/26' },
+    { label: 'Mastercard ending 5559', cardNumber: '5500005555555559', expiry: '09/26' },
   ],
 
   profile: {
