@@ -1,0 +1,26 @@
+/*
+  Stellar Devtools — Starlight theme
+  Translated from the demo app's DaisyUI "dark" palette:
+    primary  #661AE6  (purple)
+    accent   #1FB2A6  (teal)
+    base-100 #2A303C  (dark background)
+
+  Starlight docs: https://starlight.astro.build/guides/css-and-tailwind/#color-theme
+*/
+
+:root {
+  /* Accent: purple, matching DaisyUI dark primary */
+  --sl-color-accent-low:  #2d0f66;
+  --sl-color-accent:      #661ae6;
+  --sl-color-accent-high: #a96ef5;
+
+  /* Starlight's "white" — used for primary text */
+  --sl-color-white: #e8e8f0;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low:  #e9d9ff;
+  --sl-color-accent:      #5512c4;
+  --sl-color-accent-high: #3a0a8c;
+  --sl-color-white: #1a1a2e;
+}
