@@ -1,5 +1,5 @@
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { withStellarDevtools } from '@hypertheory/stellardevtools';
+import { withStellarDevtools } from '@hypertheory/stellar-ng-devtools';
 
 export const CounterStore = signalStore(
   { providedIn: 'root' },

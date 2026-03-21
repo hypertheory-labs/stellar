@@ -1,0 +1,27 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@hypertheory/stellar-ng-devtools",
+  "projectType": "library",
+  "sourceRoot": "libs/stellar-ng/src",
+  "prefix": "stellar",
+  "targets": {
+    "build": {
+      "executor": "@angular/build:ng-packagr",
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/stellar-ng/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/stellar-ng/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "tsConfig": "libs/stellar-ng/tsconfig.spec.json"
+      }
+    }
+  }
+}

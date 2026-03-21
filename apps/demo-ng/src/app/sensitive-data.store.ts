@@ -1,5 +1,5 @@
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { withStellarDevtools, sanitizeConfig } from '@hypertheory/stellardevtools';
+import { withStellarDevtools, sanitizeConfig } from '@hypertheory/stellar-ng-devtools';
 import { keepFirst, keepLast, truncate, arrayOf } from '@hypertheory/sanitize';
 
 export interface PaymentMethod {

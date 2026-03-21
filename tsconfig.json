@@ -4,8 +4,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "@hypertheory/sanitize": ["./projects/hypertheory/sanitize/src/public-api.ts"],
-      "@hypertheory/stellardevtools": ["./projects/hypertheory/stellardevtools/src/public-api.ts"]
+      "@hypertheory/sanitize": ["./libs/sanitize/src/public-api.ts"],
+      "@hypertheory/stellar-ng-devtools": ["./libs/stellar-ng/src/public-api.ts"]
     },
     "strict": true,
     "noImplicitOverride": true,
@@ -28,22 +28,22 @@
   "files": [],
   "references": [
     {
-      "path": "./projects/hypertheory/stellardevtools/tsconfig.lib.json"
+      "path": "./libs/stellar-ng/tsconfig.lib.json"
     },
     {
-      "path": "./projects/hypertheory/stellardevtools/tsconfig.spec.json"
+      "path": "./libs/stellar-ng/tsconfig.spec.json"
     },
     {
-      "path": "./projects/demo/tsconfig.app.json"
+      "path": "./apps/demo-ng/tsconfig.app.json"
     },
     {
-      "path": "./projects/demo/tsconfig.spec.json"
+      "path": "./apps/demo-ng/tsconfig.spec.json"
     },
     {
-      "path": "./projects/hypertheory/sanitize/tsconfig.lib.json"
+      "path": "./libs/sanitize/tsconfig.lib.json"
     },
     {
-      "path": "./projects/hypertheory/sanitize/tsconfig.spec.json"
+      "path": "./libs/sanitize/tsconfig.spec.json"
     }
   ]
 }

@@ -1,5 +1,8 @@
 # Jeff Log 
 
+
+   
+
 - Looked at [Stagehand](https://docs.stagehand.dev/v3/first-steps/introduction) BrowserAgent seems dead - this is the next hotness. There may be some things here that we consider in this app - I like the idea of a lighter-weight playwright alternative. Haven't looked too deeply yet, though.
 
 - Various sources on documentation, making documentation legible and accessible to LLMs: 
