@@ -140,6 +140,7 @@ so consumers don't need a separate import.
 ## Repo Notes
 
 - `.claude/settings.json` has `bypassPermissions` enabled — intentional for solo dev. Remove or move to `settings.local.json` before adding collaborators.
+- **Branching**: default to committing directly on `master` for focused, intentional work. Use a feature branch when the work is genuinely exploratory (might be abandoned), touches something risky/hard to reverse, or when collaborators are involved and a PR review step makes sense. Use judgment — don't branch by default, but don't hesitate when it's warranted.
 
 ---
 

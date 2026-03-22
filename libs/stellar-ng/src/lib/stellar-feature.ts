@@ -1,6 +1,6 @@
 import { EnvironmentProviders, Provider } from '@angular/core';
 
-export const enum StellarFeatureKind {
+export enum StellarFeatureKind {
   NgrxSignalStoreTools = 'NgrxSignalStoreTools',
 }
 

@@ -14,7 +14,7 @@ function formatValueWithShape(value: unknown, shape: ShapeValue, indentLevel: nu
     const entries = Object.entries(obj);
     if (entries.length === 0) return '{}';
     const lines = entries.map(([k, v]) => {
-      const childShape = shapeMap[k] ?? typeof v;
+      const childShape = shapeMap[k] ?? typeof v as ShapeValue;
       const formattedVal = formatValueWithShape(v, childShape, indentLevel + 1);
       return `${childIndent}"${k}": ${formattedVal}  // ${describeShape(childShape)}`;
     });
