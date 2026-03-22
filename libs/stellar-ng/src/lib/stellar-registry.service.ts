@@ -69,15 +69,18 @@ export class StellarRegistryService {
 
   private recentTrigger(): string | undefined {
     const now = performance.now();
+    const recentEvent = this.lastEvent && now - this.lastEvent.time < 100 ? this.lastEvent : null;
+    const recentClick = this.lastClick && now - this.lastClick.time < 150 ? this.lastClick : null;
 
-    if (this.lastEvent && now - this.lastEvent.time < 100) {
-      return `${this.lastEvent.type}${summarizePayload(this.lastEvent.payload)}`;
+    if (recentEvent && recentClick) {
+      return `${recentEvent.type}${summarizePayload(recentEvent.payload)} — click: "${recentClick.label}"`;
     }
-
-    if (this.lastClick && now - this.lastClick.time < 150) {
-      return `click: "${this.lastClick.label}"`;
+    if (recentEvent) {
+      return `${recentEvent.type}${summarizePayload(recentEvent.payload)}`;
     }
-
+    if (recentClick) {
+      return `click: "${recentClick.label}"`;
+    }
     return undefined;
   }
 
