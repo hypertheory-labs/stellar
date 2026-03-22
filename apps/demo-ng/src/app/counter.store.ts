@@ -1,13 +1,23 @@
-import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
+import { signalStore, withState, type } from '@ngrx/signals';
+import { event, eventGroup, withReducer, on } from '@ngrx/signals/events';
 import { withStellarDevtools } from '@hypertheory/stellar-ng-devtools';
+
+export const counterEvents = eventGroup({
+  source: 'Counter',
+  events: {
+    increment: type<void>(),
+    decrement: type<void>(),
+    reset: type<void>(),
+  },
+});
 
 export const CounterStore = signalStore(
   { providedIn: 'root' },
   withState({ count: 0, label: 'Counter' }),
   withStellarDevtools('CounterStore'),
-  withMethods(store => ({
-    increment() { patchState(store, s => ({ count: s.count + 1 })); },
-    decrement() { patchState(store, s => ({ count: s.count - 1 })); },
-    reset() { patchState(store, { count: 0 }); },
-  })),
+  withReducer(
+    on(counterEvents.increment, (_, state) => ({ count: state.count + 1 })),
+    on(counterEvents.decrement, (_, state) => ({ count: state.count - 1 })),
+    on(counterEvents.reset, () => ({ count: 0 })),
+  ),
 );

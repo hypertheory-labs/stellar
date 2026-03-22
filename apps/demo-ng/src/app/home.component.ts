@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { CounterStore } from './counter.store';
+import { CounterStore, counterEvents } from './counter.store';
 import { UserStore } from './user.store';
 import { BooksStore } from './books.store';
+import { injectDispatch } from '@ngrx/signals/events';
 
 @Component({
   selector: 'app-home',
@@ -14,9 +15,9 @@ import { BooksStore } from './books.store';
           <h2 class="card-title">Counter</h2>
           <p class="text-5xl font-mono font-bold my-2">{{ counter.count() }}</p>
           <div class="flex gap-2 mt-2">
-            <button class="btn btn-sm" (click)="counter.decrement()">−</button>
-            <button class="btn btn-sm" (click)="counter.increment()">+</button>
-            <button class="btn btn-sm btn-ghost" (click)="counter.reset()">Reset</button>
+            <button class="btn btn-sm" (click)="dispatch.decrement()">−</button>
+            <button class="btn btn-sm" (click)="dispatch.increment()">+</button>
+            <button class="btn btn-sm btn-ghost" (click)="dispatch.reset()">Reset</button>
           </div>
         </div>
       </div>
@@ -95,6 +96,7 @@ import { BooksStore } from './books.store';
 })
 export class HomeComponent {
   readonly counter = inject(CounterStore);
+  readonly dispatch = injectDispatch(counterEvents);
   readonly user = inject(UserStore);
   readonly books = inject(BooksStore);
 }
