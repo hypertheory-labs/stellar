@@ -5,9 +5,13 @@ import {
   provideEnvironmentInitializer,
 } from '@angular/core';
 import { StellarRegistryService } from './stellar-registry.service';
+import { AnyStellarFeature } from './stellar-feature';
 
-export function provideStellarDevtools(): EnvironmentProviders {
+export function provideStellarDevtools(...features: AnyStellarFeature[]): EnvironmentProviders {
+  const featureProviders = features.flatMap(f => f.providers);
+
   return makeEnvironmentProviders([
+    ...featureProviders,
     provideEnvironmentInitializer(() => {
       const registry = inject(StellarRegistryService);
 
