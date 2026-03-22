@@ -1,0 +1,133 @@
+{
+  "savedAt": "2026-03-22T14:23:10.000Z",
+  "stores": [
+    {
+      "name": "CounterStore",
+      "history": [
+        {
+          "timestamp": 1742649600000,
+          "state": { "count": 0, "label": "Counter" },
+          "route": "/",
+          "inferredShape": { "count": "number", "label": "string" }
+        },
+        {
+          "timestamp": 1742649605000,
+          "state": { "count": 1, "label": "Counter" },
+          "route": "/",
+          "inferredShape": { "count": "number", "label": "string" },
+          "trigger": "[Counter] increment — click: \"+\""
+        },
+        {
+          "timestamp": 1742649607000,
+          "state": { "count": 2, "label": "Counter" },
+          "route": "/",
+          "inferredShape": { "count": "number", "label": "string" },
+          "trigger": "[Counter] increment — click: \"+\""
+        }
+      ]
+    },
+    {
+      "name": "UserStore",
+      "history": [
+        {
+          "timestamp": 1742649600100,
+          "state": { "name": "Guest", "loggedIn": false },
+          "route": "/",
+          "inferredShape": { "name": "string", "loggedIn": "boolean" }
+        },
+        {
+          "timestamp": 1742649615000,
+          "state": { "name": "Jeff G.", "loggedIn": true },
+          "route": "/",
+          "inferredShape": { "name": "string", "loggedIn": "boolean" },
+          "trigger": "click: \"Login\""
+        }
+      ]
+    },
+    {
+      "name": "TodosStore",
+      "history": [
+        {
+          "timestamp": 1742649600200,
+          "state": { "todos": [], "loading": false, "error": null },
+          "route": "/",
+          "inferredShape": { "todos": "array", "loading": "boolean", "error": "null" }
+        },
+        {
+          "timestamp": 1742649620000,
+          "state": { "todos": [], "loading": true, "error": null },
+          "route": "/",
+          "inferredShape": { "todos": "array", "loading": "boolean", "error": "null" },
+          "trigger": "click: \"Load todos\""
+        },
+        {
+          "timestamp": 1742649620890,
+          "state": {
+            "todos": [
+              { "id": 1, "title": "delectus aut autem", "completed": false, "userId": 1 },
+              { "id": 2, "title": "quis ut nam facilis et officia qui", "completed": true, "userId": 1 },
+              { "id": 3, "title": "fugiat veniam minus", "completed": false, "userId": 1 },
+              { "id": 4, "title": "et porro tempora", "completed": true, "userId": 1 },
+              { "id": 5, "title": "laboriosam mollitia et enim quasi", "completed": false, "userId": 1 }
+            ],
+            "loading": false,
+            "error": null
+          },
+          "route": "/",
+          "inferredShape": { "todos": "array", "loading": "boolean", "error": "null" },
+          "trigger": "click: \"Load todos\"",
+          "httpEventId": "1742649620000-r7x2k"
+        },
+        {
+          "timestamp": 1742649640000,
+          "state": {
+            "todos": [
+              { "id": 1, "title": "delectus aut autem", "completed": false, "userId": 1 },
+              { "id": 2, "title": "quis ut nam facilis et officia qui", "completed": true, "userId": 1 },
+              { "id": 3, "title": "fugiat veniam minus", "completed": false, "userId": 1 },
+              { "id": 4, "title": "et porro tempora", "completed": true, "userId": 1 },
+              { "id": 5, "title": "laboriosam mollitia et enim quasi", "completed": false, "userId": 1 },
+              { "id": 1742649640000, "title": "my new todo", "completed": false, "userId": 1 }
+            ],
+            "loading": false,
+            "error": null
+          },
+          "route": "/",
+          "inferredShape": { "todos": "array", "loading": "boolean", "error": "null" },
+          "trigger": "click: \"Add\"",
+          "httpEventId": "1742649639500-p9m3n"
+        }
+      ]
+    }
+  ],
+  "httpEvents": [
+    {
+      "id": "1742649620000-r7x2k",
+      "timestamp": 1742649620000,
+      "method": "GET",
+      "url": "https://jsonplaceholder.typicode.com/todos?_limit=5",
+      "status": 200,
+      "ok": true,
+      "duration": 890,
+      "trigger": "click: \"Load todos\"",
+      "responseBody": [
+        { "id": 1, "title": "delectus aut autem", "completed": false, "userId": 1 },
+        { "id": 2, "title": "quis ut nam facilis et officia qui", "completed": true, "userId": 1 },
+        { "id": 3, "title": "fugiat veniam minus", "completed": false, "userId": 1 },
+        { "id": 4, "title": "et porro tempora", "completed": true, "userId": 1 },
+        { "id": 5, "title": "laboriosam mollitia et enim quasi", "completed": false, "userId": 1 }
+      ]
+    },
+    {
+      "id": "1742649639500-p9m3n",
+      "timestamp": 1742649639500,
+      "method": "POST",
+      "url": "https://jsonplaceholder.typicode.com/todos",
+      "status": 201,
+      "ok": true,
+      "duration": 320,
+      "trigger": "click: \"Add\"",
+      "responseBody": { "id": 201, "title": "my new todo", "completed": false, "userId": 1 }
+    }
+  ]
+}
