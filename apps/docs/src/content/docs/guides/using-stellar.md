@@ -88,7 +88,11 @@ The causal connections are drawn as dashed lines: a click connects to the reques
 
 Click any node to inspect it — you'll see the URL and status code for HTTP bars, or the state delta for snapshot dots.
 
-Click **↓ Export** in the header to download the recording as JSON. The **⏺ Timeline** chip in the picker lets you return to this view at any time during the session.
+**Copy for AI** in the timeline header copies a formatted version of the recording to the clipboard — the same data as the downloaded file, but laid out as markdown with the format explanation and store context ahead of the graph. Paste it into a conversation and ask your question. The recording is self-contained: an LLM doesn't need any additional context to read it.
+
+**↓ Export** downloads the JSON file. The downloaded file also embeds the format explanation and store context, so it's useful when sharing asynchronously or attaching to a ticket.
+
+The **⏺ Timeline** chip in the picker lets you return to this view at any time during the session.
 
 ---
 

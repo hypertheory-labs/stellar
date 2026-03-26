@@ -2,6 +2,16 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpEvent, RecordingEdge, RecordingNode, RecordingSession, StateSnapshot, StoreEntry } from './models';
 import { StellarRegistryService } from './stellar-registry.service';
 
+// Format description embedded in every RecordingSession for LLM consumers
+const RECORDING_FORMAT =
+  'Stellar Devtools recording — directed causal graph of a user interaction in an Angular/NgRx Signal Store app. ' +
+  'Node types: click (user gesture, label=element text), ngrx-event (dispatched NgRx event, label=type), ' +
+  'http-request (fetch initiated, method+url), http-response (fetch completed, status+duration), ' +
+  'state-snapshot (store state change, delta:{field:[before,after]}, arrays summarized to length). ' +
+  'Edge labels: initiated (user action→request), resolved (request→response), ' +
+  'produced (response→state-snapshot), caused (user action→optimistic state-snapshot). ' +
+  't=ms from recording start. storeContext maps store names to their purpose.';
+
 // Compact summary of a value for recording delta — arrays become their length
 function summarize(v: unknown): unknown {
   if (Array.isArray(v)) return v.length;
@@ -183,10 +193,21 @@ export class RecordingService {
     // Sort all nodes by t so the output reads chronologically
     nodes.sort((a, b) => a.t - b.t);
 
+    // Store context: descriptions for stores that actually appear in this recording
+    const storeNamesInRecording = new Set(allSnaps.map(s => s.store.name));
+    const storeContext: Record<string, string> = {};
+    for (const store of stores) {
+      if (storeNamesInRecording.has(store.name) && store.description) {
+        storeContext[store.name] = store.description;
+      }
+    }
+
     return {
       name,
       recordedAt: new Date(start).toISOString(),
       duration: end - start,
+      description: RECORDING_FORMAT,
+      storeContext,
       nodes,
       edges,
     };

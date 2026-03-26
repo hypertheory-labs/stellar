@@ -87,6 +87,10 @@ export interface RecordingSession {
   name: string;
   recordedAt: string;   // ISO timestamp
   duration: number;     // ms
+  /** Format explanation — tells an LLM how to interpret nodes and edges. */
+  description: string;
+  /** Purpose of each store that appears in this recording, keyed by store name. */
+  storeContext: Record<string, string>;
   nodes: RecordingNode[];
   edges: RecordingEdge[];
 }

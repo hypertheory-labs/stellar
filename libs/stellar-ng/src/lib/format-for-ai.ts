@@ -1,4 +1,4 @@
-import { StoreEntry, StateSnapshot, ShapeMap, ShapeValue, HttpEvent } from './models';
+import { StoreEntry, StateSnapshot, ShapeMap, ShapeValue, HttpEvent, RecordingSession } from './models';
 
 function formatDate(timestamp: number): string {
   return new Date(timestamp).toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
@@ -151,6 +151,41 @@ export function formatHttpEventsForAI(events: HttpEvent[], stores?: StoreEntry[]
       lines.push(`  ⚠ ${ev.error}`);
     }
   }
+
+  return lines.join('\n');
+}
+
+export function formatRecordingForAI(session: RecordingSession): string {
+  const lines: string[] = [];
+
+  lines.push(`## Stellar Recording — "${session.name}"`);
+  lines.push('');
+
+  const date = new Date(session.recordedAt).toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
+  const durSec = (session.duration / 1000).toFixed(1);
+  lines.push(
+    `**Captured**: ${date} | **Duration**: ${durSec}s | ` +
+    `**Nodes**: ${session.nodes.length} | **Edges**: ${session.edges.length}`,
+  );
+
+  const storeEntries = Object.entries(session.storeContext ?? {});
+  if (storeEntries.length > 0) {
+    lines.push('');
+    lines.push('### Store Context');
+    for (const [name, desc] of storeEntries) {
+      lines.push(`**${name}**: ${desc}`);
+    }
+  }
+
+  lines.push('');
+  lines.push('### Format');
+  lines.push(session.description);
+
+  lines.push('');
+  lines.push('### Graph');
+  lines.push('```json');
+  lines.push(JSON.stringify({ nodes: session.nodes, edges: session.edges }, null, 2));
+  lines.push('```');
 
   return lines.join('\n');
 }

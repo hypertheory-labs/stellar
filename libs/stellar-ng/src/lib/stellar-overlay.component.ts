@@ -6,7 +6,7 @@ import { SnapshotWriterService } from './snapshot-writer.service';
 import { RecordingService } from './recording.service';
 import { HttpEvent, StateSnapshot } from './models';
 import { computeDiff, DiffEntry, formatValue } from './diff.utils';
-import { formatStoreForAI, formatAllStoresForAI } from './format-for-ai';
+import { formatStoreForAI, formatAllStoresForAI, formatRecordingForAI } from './format-for-ai';
 import { StellarTimelineComponent } from './stellar-timeline.component';
 
 type OverlayMode = 'closed' | 'picking' | 'viewing' | 'http' | 'timeline';
@@ -607,6 +607,12 @@ function highlightValue(value: unknown, indent: number): string {
 
         <div class="stellar-panel-header">
           <span class="stellar-panel-title">⏺ {{ lastRecording()?.name ?? 'recording' }}</span>
+          <button
+            class="stellar-copy-btn"
+            [class.stellar-copied]="copiedStore() === '__recording__'"
+            (click)="copyRecordingForAI()">
+            {{ copiedStore() === '__recording__' ? '✓ Copied' : 'Copy for AI' }}
+          </button>
           <button class="stellar-copy-btn" (click)="exportRecording()">↓ Export</button>
           <button class="stellar-icon-btn" (click)="goToPicker()">← stores</button>
           <button class="stellar-icon-btn" (click)="close()">✕</button>
@@ -981,6 +987,11 @@ export class StellarOverlayComponent {
   exportRecording(): void {
     const session = this.recorder.lastSession();
     if (session) this.recorder.download(session);
+  }
+
+  copyRecordingForAI(): void {
+    const session = this.recorder.lastSession();
+    if (session) this.writeToClipboard(formatRecordingForAI(session), '__recording__');
   }
 
   close(): void {
