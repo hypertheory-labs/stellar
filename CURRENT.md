@@ -26,9 +26,11 @@ Updated at the end of every session via `/capture`.
 - **`window.__stellarDevtools.http()`** — returns full `HttpEvent[]`
 - **TodosStore demo** — jsonplaceholder fetch to exercise HTTP monitoring end-to-end
 
+## Just landed (continued)
+- **Playwright tests for recording** — 21 tests: API surface, session shape, state capture, edge wiring (caused/resolved/produced), HTTP capture with mocked routes; `apps/demo-ng/e2e/recording.spec.ts`
+
 ## Next
-1. **Playwright tests for recording** — `window.__stellarDevtools.record` API shape, exported JSON structure, edge wiring
-2. **Playwright tests for HTTP monitoring + describe()** — `http()` shape, `httpEventId` on snapshots, `describe()` output shape including `description` and `registeredAt`
+1. **Playwright tests for HTTP monitoring + describe()** — `http()` shape, `httpEventId` on snapshots, `describe()` output shape including `description` and `registeredAt`
 3. **Causal graph view in overlay** — proper visualization of the recording; outbox pattern or query cache as demo candidate
 4. **`withHttpTrafficMonitoring()` options** — URL filter patterns (don't capture `/assets/`, `/favicon.ico`)
 
