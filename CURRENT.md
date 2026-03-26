@@ -49,3 +49,4 @@ Updated at the end of every session via `/capture`.
 - Production-mode gating of the overlay
 - **Bug: panel clips at high browser zoom** — good first GitHub issue
 - Tree view for deeply nested state
+- **OpenTelemetry adapter** — RecordingSession → OTel trace export. Our directed graph is richer than OTel's tree (multi-cause nodes don't map to single parent_id), so the right move is an adapter, not aligning the data model. Worth asking around on demand before building. Mapping: RecordingSession → Trace, http-request+response pair → CLIENT span, state-snapshot/click/ngrx-event → INTERNAL spans.
