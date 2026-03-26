@@ -30,7 +30,8 @@ function snapshotIndexIn(store: StoreEntry, snap: StateSnapshot): number {
 export class RecordingService {
   private registry = inject(StellarRegistryService);
 
-  readonly isRecording = signal(false);
+  readonly isRecording  = signal(false);
+  readonly lastSession  = signal<RecordingSession | null>(null);
   private recordingStart: number | null = null;
   private recordingName = '';
 
@@ -46,7 +47,9 @@ export class RecordingService {
     const end = Date.now();
     this.isRecording.set(false);
     this.recordingStart = null;
-    return this.buildSession(this.recordingName, start, end);
+    const session = this.buildSession(this.recordingName, start, end);
+    this.lastSession.set(session);
+    return session;
   }
 
   download(session: RecordingSession): void {
@@ -95,12 +98,15 @@ export class RecordingService {
     }
 
     // ── Trigger node deduplication ────────────────────────────────────────────
-    // Same trigger text within 500ms of an existing entry → reuse the node.
+    // Same trigger text within 50ms → reuse the node. This handles the case
+    // where both an HTTP event and a state snapshot from the same user action
+    // arrive nearly simultaneously (~2–5ms apart in practice). 500ms was too
+    // wide: it collapsed distinct rapid clicks on the same button into one node.
     const triggerIndex: Array<{ text: string; id: string; minTime: number }> = [];
 
     const findOrCreateTrigger = (triggerText: string, atTime: number): string => {
       const existing = triggerIndex.find(
-        e => e.text === triggerText && Math.abs(e.minTime - atTime) < 500,
+        e => e.text === triggerText && Math.abs(e.minTime - atTime) < 50,
       );
       if (existing) return existing.id;
 

@@ -31,7 +31,6 @@ import { ProductsStore } from './products.store';
                    placeholder="Price"
                    [(ngModel)]="newPrice" />
             <button class="btn btn-sm btn-primary"
-                    [disabled]="!newName.trim()"
                     (click)="add()">Add product</button>
             <button class="btn btn-sm btn-ghost" (click)="store.load()">Reload</button>
           </div>
@@ -127,7 +126,7 @@ import { ProductsStore } from './products.store';
 export class ProductsComponent {
   readonly store = inject(ProductsStore);
 
-  newName = '';
+  newName = 'Sample-Data';
   newPrice = 0;
 
   editingId = signal<string | null>(null);
@@ -135,10 +134,8 @@ export class ProductsComponent {
   editPrice = 0;
 
   add() {
-    if (!this.newName.trim()) return;
-    this.store.addProduct(this.newName.trim(), this.newPrice);
-    this.newName = '';
-    this.newPrice = 0;
+    const name = this.newName.trim() || `Product-${Date.now()}`;
+    this.store.addProduct(name, this.newPrice);
   }
 
   startEdit(product: { id: string; name: string; price: number }) {

@@ -7,8 +7,9 @@ import { RecordingService } from './recording.service';
 import { HttpEvent, StateSnapshot } from './models';
 import { computeDiff, DiffEntry, formatValue } from './diff.utils';
 import { formatStoreForAI, formatAllStoresForAI } from './format-for-ai';
+import { StellarTimelineComponent } from './stellar-timeline.component';
 
-type OverlayMode = 'closed' | 'picking' | 'viewing' | 'http';
+type OverlayMode = 'closed' | 'picking' | 'viewing' | 'http' | 'timeline';
 type PanelView = 'state' | 'diff';
 
 const MIN_WIDTH = 360;
@@ -70,7 +71,7 @@ function highlightValue(value: unknown, indent: number): string {
 @Component({
   selector: 'stellar-overlay',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, StellarTimelineComponent],
   styles: [`
     :host {
       position: fixed;
@@ -530,6 +531,14 @@ function highlightValue(value: unknown, indent: number): string {
 
     .stellar-stop-btn:hover { background: #585b70; }
 
+    /* ── Timeline panel ──────────────────────────────────────────── */
+    .stellar-timeline-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
     .stellar-rec-indicator {
       display: flex;
       align-items: center;
@@ -585,6 +594,27 @@ function highlightValue(value: unknown, indent: number): string {
                 }
               </div>
             }
+          }
+        </div>
+      </div>
+    }
+
+    @if (mode() === 'timeline') {
+      <div class="stellar-panel" [style.width.px]="panelWidth()" [style.height.px]="panelHeight()">
+
+        <div class="stellar-resize-v" [class.stellar-dragging]="draggingV()" (mousedown)="startResizeV($event)"></div>
+        <div class="stellar-resize-h" [class.stellar-dragging]="draggingH()" (mousedown)="startResizeH($event)"></div>
+
+        <div class="stellar-panel-header">
+          <span class="stellar-panel-title">⏺ {{ lastRecording()?.name ?? 'recording' }}</span>
+          <button class="stellar-copy-btn" (click)="exportRecording()">↓ Export</button>
+          <button class="stellar-icon-btn" (click)="goToPicker()">← stores</button>
+          <button class="stellar-icon-btn" (click)="close()">✕</button>
+        </div>
+
+        <div class="stellar-timeline-body">
+          @if (lastRecording(); as session) {
+            <stellar-timeline [session]="session" [width]="panelWidth()" />
           }
         </div>
       </div>
@@ -742,7 +772,8 @@ export class StellarOverlayComponent {
   private writer = inject(SnapshotWriterService);
   private recorder = inject(RecordingService);
 
-  readonly isRecording = this.recorder.isRecording;
+  readonly isRecording   = this.recorder.isRecording;
+  readonly lastRecording = this.recorder.lastSession;
 
   readonly stores = this.registry.stores;
   readonly httpEvents = this.registry.httpEvents;
@@ -938,8 +969,13 @@ export class StellarOverlayComponent {
   stopRecording(): void {
     const session = this.recorder.stop();
     if (session) {
-      this.recorder.download(session);
+      this.mode.set('timeline');
     }
+  }
+
+  exportRecording(): void {
+    const session = this.recorder.lastSession();
+    if (session) this.recorder.download(session);
   }
 
   close(): void {
