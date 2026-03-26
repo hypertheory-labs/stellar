@@ -103,11 +103,12 @@ test.describe('RecordingSession shape', () => {
     expect(session.recordedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
   });
 
-  test('duration is a positive number', async ({ page }) => {
+  test('duration is a non-negative number', async ({ page }) => {
     await startRecording(page);
     const session = await stopRecording(page);
 
-    expect(session.duration).toBeGreaterThan(0);
+    // Duration can be 0 if start/stop happen within the same ms
+    expect(session.duration).toBeGreaterThanOrEqual(0);
   });
 
   test('default name is "recording"', async ({ page }) => {
