@@ -6,6 +6,20 @@ Updated at the end of every session via `/capture`.
 ---
 
 ## Just landed
+- **`@hypertheory-labs/sanitize` published to npm** — v0.0.1 live at npmjs.com
+- **`@hypertheory-labs/stellar-ng-devtools` published to npm** — v0.0.1 live at npmjs.com
+- **Public repo live** — `github.com/hypertheory-labs/stellar`; private files stripped via `/sync-public` skill
+- **Package scope renamed** — `@hypertheory/` → `@hypertheory-labs/` across all files
+- **Hosting decided** — Cloudflare Pages for docs + demo (static), k8s cluster reserved for server-side workloads
+- **`demo` build config** — `nx build demo-ng --configuration demo` for Cloudflare Pages deploy (MSW on, production settings)
+- **`_redirects` file** — SPA routing for Cloudflare Pages
+- **7 design docs promoted** to `apps/docs/explainers/`: ai-accessibility, use-cases, clean-code-for-ai, library-ai-context, causal-graph-and-source-access, causal-event-stream, sanitize-design
+- **Sanitize reference page** — replaced empty stub with real quick-reference table
+- **Library READMEs** — replaced Angular CLI boilerplate with real content
+- **`/sync-public` skill** — private→public repo sync workflow
+- **TDR: Going Public — Infrastructure Decisions** — `explainers/going-public-infrastructure-decisions.md`
+
+## Just landed (prior session)
 - **`describe()` on `window.__stellarDevtools`** — structured manifest: store list with `description`, `snapshotCount`, `registeredAt` (lazy-loading visibility), `sourceHint`, API list, `caveat`
 - **`description` field on `RegisterOptions`** — JSDoc, dev-mode warning if absent, populated on all demo stores
 - **`registeredAt` on `StoreEntry`** — ms since app start; makes lazy-loading incompleteness visible to AI consumers
@@ -43,9 +57,11 @@ Updated at the end of every session via `/capture`.
 - **TDR: Designing reproducible demos** — `apps/docs/src/content/docs/explainers/designing-reproducible-demos.md`
 
 ## Next
-1. **Playwright tests** — timeline mode activation, `description`/`storeContext` in recording output, "Copy for AI" button, `http()` shape, `describe()` output shape
-2. **Showcase scenarios: coming-soon three** — missing test coverage, story card verification, CodeTour generation (all infrastructure exists; need stores + components + sample story card)
-3. **Chaos mode reset on scenario navigation** — currently chaos persists across page navigations; should reset on leaving a scenario page
+1. **Cloudflare Pages deploy** — two projects: docs → `stellar.hypertheory-labs.dev`, demo → `stellar-demo.hypertheory-labs.dev`. Build configs and `_redirects` are ready; just needs Cloudflare UI setup.
+2. **CONTRIBUTORS.md** — needed before NgRx team invite (~2026-04-03). Contribution workflow, branching, PR expectations.
+3. **Playwright tests** — timeline mode activation, `description`/`storeContext` in recording output, "Copy for AI" button, `http()` shape, `describe()` output shape
+4. **Showcase scenarios: coming-soon three** — missing test coverage, story card verification, CodeTour generation
+5. **Chaos mode reset on scenario navigation** — chaos persists across page navigations; should reset on leaving a scenario
 
 ## Design questions open
 - WebSockets and SSE — parked until fetch is solid

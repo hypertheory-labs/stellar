@@ -60,7 +60,7 @@ git push public _public_sync_tmp:master --force-with-lease
 ### 7. Clean up
 
 ```bash
-git checkout master
+git checkout -f master
 git branch -D _public_sync_tmp
 ```
 
