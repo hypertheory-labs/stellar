@@ -1,6 +1,18 @@
 {
-  "name": "@hypertheory/sanitize",
+  "name": "@hypertheory-labs/sanitize",
   "version": "0.0.1",
+  "description": "State sanitization library for developer tools — redact, mask, and transform sensitive fields before they reach any observer.",
+  "keywords": ["sanitize", "redact", "state", "devtools", "ngrx", "angular"],
+  "license": "MIT",
+  "homepage": "https://stellar.hypertheory-labs.dev/explainers/sanitize-design/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypertheory-labs/stellar.git",
+    "directory": "libs/sanitize"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "vitest run --config vitest.config.ts"
   },

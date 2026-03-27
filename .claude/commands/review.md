@@ -8,8 +8,8 @@ Report findings concisely. Clean sections get one line. Flag blocking issues sep
 ## 1. Build health
 
 Build both libraries:
-- `npx nx build @hypertheory/sanitize`
-- `npx nx build @hypertheory/stellar-ng-devtools`
+- `npx nx build @hypertheory-labs/sanitize`
+- `npx nx build @hypertheory-labs/stellar-ng-devtools`
 
 Any failure is blocking. Report the full error.
 

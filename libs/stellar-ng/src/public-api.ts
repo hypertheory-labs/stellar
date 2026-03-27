@@ -8,7 +8,7 @@ export { StellarOverlayComponent } from './lib/stellar-overlay.component';
 export type { StoreEntry, StateSnapshot, HttpEvent, RegisterOptions, ShapeMap, ShapeValue, RecordingSession, RecordingNode, RecordingEdge, RecordingNodeType } from './lib/models';
 export { RecordingService } from './lib/recording.service';
 
-// Re-exported from @hypertheory/sanitize for convenience — consumers of
+// Re-exported from @hypertheory-labs/sanitize for convenience — consumers of
 // stellardevtools don't need a separate import just to type their sanitize config.
-export { sanitizeConfig } from '@hypertheory/sanitize';
-export type { SanitizationConfig, SanitizationHandler } from '@hypertheory/sanitize';
+export { sanitizeConfig } from '@hypertheory-labs/sanitize';
+export type { SanitizationConfig, SanitizationHandler } from '@hypertheory-labs/sanitize';

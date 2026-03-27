@@ -1,5 +1,5 @@
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
-import { withStellarDevtools } from '@hypertheory/stellar-ng-devtools';
+import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
 
 export interface Todo {
   id: number;

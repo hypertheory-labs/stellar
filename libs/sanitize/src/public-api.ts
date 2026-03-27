@@ -1,5 +1,5 @@
 /*
- * Public API Surface of @hypertheory/sanitize
+ * Public API Surface of @hypertheory-labs/sanitize
  */
 
 export { sanitized, sanitizeConfig, autoRedactConfig, arrayOf, keepFirst, keepLast, truncate, replace } from './lib/sanitation';

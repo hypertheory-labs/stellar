@@ -19,7 +19,7 @@ But "make the docs legible for LLMs" turns out to be two distinct problems that 
 
 **Problem A: Training data ingestion.** Can a future model's training pipeline crawl and understand our docs? This is the problem most LLM-legibility guides address. It's about robots.txt, static HTML rendering, semantic markup, avoiding JavaScript-only content. Starlight handles most of this out of the box: clean static output, no JS-only rendering, sitemap generation.
 
-**Problem B: AI coding assistant usability right now.** Can a developer today tell an AI assistant "help me use `@hypertheory/stellar-ng-devtools`" and get correct, useful guidance? This is the more immediately relevant problem for us. It's about the shape of the content, not just its crawlability.
+**Problem B: AI coding assistant usability right now.** Can a developer today tell an AI assistant "help me use `@hypertheory-labs/stellar-ng-devtools`" and get correct, useful guidance? This is the more immediately relevant problem for us. It's about the shape of the content, not just its crawlability.
 
 These are not the same problem. A site can be perfectly crawlable and still be nearly useless to an AI assistant trying to help a developer implement something, because the information is fragmented, inconsistently named, or buried in prose where structured data would serve better.
 

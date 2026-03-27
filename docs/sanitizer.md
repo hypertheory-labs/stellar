@@ -132,7 +132,7 @@ cover it. This is opt-in and layered on top; the schema approach works fine with
 Sanitization ships as `withStateSanitization()` — a first-party plugin for
 `provideStellar()`. The operator functions (`redact`, `omit`, etc.) and the
 `schema<T>()` helper would live in a **separate, general-purpose package**
-(`@hypertheory/sanitize` or similar) with zero dependency on the devtools. This means:
+(`@hypertheory-labs/sanitize` or similar) with zero dependency on the devtools. This means:
 
 - The operators are reusable in event sourcing, logging pipelines, or anywhere else
   sensitive state needs to be scrubbed

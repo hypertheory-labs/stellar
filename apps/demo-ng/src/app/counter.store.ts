@@ -1,6 +1,6 @@
 import { signalStore, withState, type } from '@ngrx/signals';
 import { event, eventGroup, withReducer, on } from '@ngrx/signals/events';
-import { withStellarDevtools } from '@hypertheory/stellar-ng-devtools';
+import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
 
 export const counterEvents = eventGroup({
   source: 'Counter',

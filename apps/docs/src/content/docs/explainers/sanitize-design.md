@@ -1,4 +1,7 @@
-# `@hypertheory-labs/sanitize` — API Design
+---
+title: The Sanitize API — Design Decisions
+description: Why the sanitize API is shaped the way it is — the three-tier model, named rules vs. parameterized operators, and the principle of legibility at the trust boundary.
+---
 
 *Living document. Updated as decisions are made.*
 
@@ -6,8 +9,8 @@
 
 ## Core Principle: Legibility at the Trust Boundary
 
-This library sits at the boundary between developer intent and what gets shared with AI
-assistants, logging systems, and export pipelines. The config a developer writes is also
+`@hypertheory-labs/sanitize` sits at the boundary between developer intent and what gets shared with
+AI assistants, logging systems, and export pipelines. The config a developer writes is also
 an audit surface — a security reviewer should be able to scan it and immediately verify
 coverage without understanding implementation details.
 
@@ -75,8 +78,7 @@ functions. *Not yet implemented — see backlog.*
 
 Named rules are string literals drawn from the `sanitizationHandlers` map. The `satisfies`
 constraint on that map is what makes `SanitizationRule` narrow to a union of literal keys
-rather than `string` — this is load-bearing for autocomplete and type safety. See
-`docs/notes.md`.
+rather than `string` — this is load-bearing for autocomplete and type safety.
 
 ### Primitives — transformation vocabulary
 
@@ -104,25 +106,25 @@ rather than `string` — this is load-bearing for autocomplete and type safety. 
 | `'secret'` | `redacted` | Fully hidden |
 | `'emailAddress'` | `email` | Verbose alias for clarity |
 
-**`omitted` vs `redacted`**: an important distinction. `omitted` removes the key — the
-field does not exist in the sanitized output. `redacted` keeps the key with `'[redacted]'`
-as the value. For AI accessibility, `redacted` is generally preferable: the AI can see that
-a field exists and understand the data shape, even if it cannot see the value. Use `omitted`
-only when the field's *existence* would itself be misleading.
+### `omitted` vs `redacted` — an important distinction
 
-**`hashed` and identity correlation**: replacing an API key with `[~3f9a12b4]` preserves
-the ability to tell whether two stores are using the same key (same hash) or whether the
-key changed between snapshots (different hash). This is genuinely useful for debugging
-without exposing the value. Two occurrences of the same hash in a snapshot = same underlying
-value.
+`omitted` removes the key — the field does not exist in the sanitized output. `redacted` keeps
+the key with `'[redacted]'` as the value. For AI accessibility, `redacted` is generally preferable:
+the AI can see that a field exists and understand the data shape, even if it cannot see the value.
+Use `omitted` only when the field's *existence* would itself be misleading.
+
+### `hashed` and identity correlation
+
+Replacing an API key with `[~3f9a12b4]` preserves the ability to tell whether two stores are using
+the same key (same hash) or whether the key changed between snapshots (different hash). This is
+genuinely useful for debugging without exposing the value.
 
 ---
 
 ## Parameterized Operators
 
 For cases the named vocabulary doesn't cover. Each returns a `SanitizationHandler`
-(`(v: string) => string`) — a plain function that can be used anywhere a named rule
-can be used.
+(`(v: string) => string`) — a plain function usable anywhere a named rule can be used.
 
 | Operator | Signature | Output |
 |---|---|---|
@@ -153,32 +155,55 @@ customers: arrayOf({ email: 'omitted', creditCard: 'creditCard' })
 and doesn't require knowing the `[config]` convention.
 
 **Vocabulary borrowed from Zod**: `z.array()` serves the same structural purpose in Zod's
-API (describe the shape of an array). We're not building a schema library and there is no
-further convergence with Zod's API surface — this is the full extent of the overlap.
-`arrayOf()` is the end of that road, not the beginning of a descent into schema territory.
+API. There is no further convergence with Zod's API surface — this is the full extent of the
+overlap. `arrayOf()` is the end of that road, not the beginning of a descent into schema territory.
 
-Both forms are supported for compatibility, but `arrayOf()` is the canonical style.
+Both forms are supported for compatibility, but `arrayOf()` is canonical.
+
+---
+
+## Why `satisfies` on the handler map is load-bearing
+
+```ts
+const sanitizationHandlers = {
+    omitted: null,
+    lastFour: (v: string) => v.slice(-4),
+    // ...
+} satisfies Record<string, ((v: string) => string) | null>;
+```
+
+`SanitizationRule` is derived as `keyof typeof sanitizationHandlers`. If `satisfies` is replaced
+with a type annotation (`: Record<string, ...>`), TypeScript widens the type and `keyof` produces
+`string` instead of `'omitted' | 'lastFour' | ...`, breaking the entire config type and
+eliminating autocomplete. `satisfies` validates the shape while preserving the narrow literal key
+types. Do not change this.
+
+---
+
+## Zero-Config Layer: `autoRedactConfig()`
+
+`autoRedactConfig(state)` scans top-level field names against a sensitive-field blocklist and
+returns a `SanitizationConfig` automatically. `withStellarDevtools` calls this on every state
+snapshot and merges the result with any explicit `sanitize` option:
+
+```ts
+{ ...autoRedactConfig(raw), ...options.sanitize }
+```
+
+Explicit config always wins. This means you get protection for common field names without
+writing any config, and any explicit rules override the defaults.
 
 ---
 
 ## Open / Backlog
 
-- **`createSanitizer()` factory** — enables domain-specific aliases (Tier 3). See backlog
-  in `overview.md`. Design note: values in the custom map can be either a named primitive
-  (string) or a `SanitizationHandler` function; the factory promotes them all to string
-  aliases with full type safety.
+- **`createSanitizer()` factory** — enables domain-specific aliases (Tier 3). Design note:
+  values in the custom map can be either a named primitive (string) or a `SanitizationHandler`
+  function; the factory promotes them all to string aliases with full type safety.
 
 - **`@hypertheory-labs/sensitive`** — a companion package for runtime-visible tagging of
   sensitive data using tagged classes (Effect-style `_tag` pattern). Sanitization rules
-  could be derived automatically from tags. See `docs/ai-accessibility.md` and
-  `overview.md` backlog.
-
-## ✅ Implemented
-
-- All Tier 1 named rules (primitives + semantic aliases)
-- All Tier 2 parameterized operators (`keepFirst`, `keepLast`, `truncate`, `replace`)
-- `arrayOf()` structural combinator (canonical; tuple form kept for compatibility)
-- `sanitizeConfig<T>()` typed helper — re-exported from `@hypertheory-labs/stellardevtools`
-- **`autoRedactConfig(state)`** — zero-config layer scanning top-level field names against
-  the `SENSITIVE_FIELD_NAMES` set. Returns a `SanitizationConfig` that can be merged with
-  an explicit config (explicit wins). Wired into `withStellarDevtools` automatically.
+  could be derived automatically from tags — a field of type `SSN` would be redacted
+  everywhere without explicit config. Enables cross-cutting policy-based sanitization and,
+  eventually, AI-assisted security auditing ("is any value tagged `employee-id` ever
+  appearing in a route segment?").

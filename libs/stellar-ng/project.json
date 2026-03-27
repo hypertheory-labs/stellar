@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "@hypertheory/stellar-ng-devtools",
+  "name": "@hypertheory-labs/stellar-ng-devtools",
   "projectType": "library",
   "sourceRoot": "libs/stellar-ng/src",
   "prefix": "stellar",

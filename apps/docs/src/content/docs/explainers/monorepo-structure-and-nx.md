@@ -31,7 +31,7 @@ The specific names matter less than the consistency. Future projects land in `li
 
 ## The rename: `stellardevtools` → `stellar-ng-devtools`
 
-The original name had no framework indicator. Given that React and Vue adapters are plausible future additions, the Angular library needed to signal its scope in the package name. `@hypertheory/stellar-ng-devtools` makes the Angular specificity visible at the import site. The framework-agnostic `@hypertheory/sanitize` is unchanged — it has no Angular dependency and the name is correct as-is.
+The original name had no framework indicator. Given that React and Vue adapters are plausible future additions, the Angular library needed to signal its scope in the package name. `@hypertheory-labs/stellar-ng-devtools` makes the Angular specificity visible at the import site. The framework-agnostic `@hypertheory-labs/sanitize` is unchanged — it has no Angular dependency and the name is correct as-is.
 
 ## What we deliberately deferred
 

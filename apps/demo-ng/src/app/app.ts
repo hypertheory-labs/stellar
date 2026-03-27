@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
-import { StellarOverlayComponent } from '@hypertheory/stellar-ng-devtools';
+import { StellarOverlayComponent } from '@hypertheory-labs/stellar-ng-devtools';
 
 @Component({
   selector: 'app-root',

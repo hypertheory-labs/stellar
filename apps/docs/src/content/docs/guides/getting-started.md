@@ -15,7 +15,7 @@ Stellar Devtools has not yet published a stable release to npm. Installation ins
 ## Install
 
 ```bash
-npm install @hypertheory/stellar-ng-devtools
+npm install @hypertheory-labs/stellar-ng-devtools
 ```
 
 ## Configure the provider
@@ -24,7 +24,7 @@ In your `app.config.ts`, add `provideStellar()` to your providers:
 
 ```typescript
 import { ApplicationConfig } from '@angular/core';
-import { provideStellar } from '@hypertheory/stellar-ng-devtools';
+import { provideStellar } from '@hypertheory-labs/stellar-ng-devtools';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,7 +47,7 @@ In your root component template, add the overlay element:
 Import `StellarOverlayComponent` in your component:
 
 ```typescript
-import { StellarOverlayComponent } from '@hypertheory/stellar-ng-devtools';
+import { StellarOverlayComponent } from '@hypertheory-labs/stellar-ng-devtools';
 
 @Component({
   imports: [RouterOutlet, StellarOverlayComponent],
@@ -62,7 +62,7 @@ Use `withStellarDevtools` as a feature in any NgRx Signal Store:
 
 ```typescript
 import { signalStore, withState } from '@ngrx/signals';
-import { withStellarDevtools } from '@hypertheory/stellar-ng-devtools';
+import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
 
 export const CounterStore = signalStore(
   withState({ count: 0 }),
@@ -78,7 +78,7 @@ If your store contains sensitive values, declare a sanitization config:
 
 ```typescript
 import { signalStore, withState } from '@ngrx/signals';
-import { withStellarDevtools, sanitizeConfig } from '@hypertheory/stellar-ng-devtools';
+import { withStellarDevtools, sanitizeConfig } from '@hypertheory-labs/stellar-ng-devtools';
 
 export const UserStore = signalStore(
   withState({ userId: '', email: '', sessionToken: '', role: '' }),

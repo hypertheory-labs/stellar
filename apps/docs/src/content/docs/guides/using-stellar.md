@@ -45,7 +45,7 @@ Add `withHttpTrafficMonitoring()` to your `provideStellar()` call:
 
 ```typescript
 // app.config.ts
-import { provideStellar, withHttpTrafficMonitoring } from '@hypertheory/stellar-ng-devtools';
+import { provideStellar, withHttpTrafficMonitoring } from '@hypertheory-labs/stellar-ng-devtools';
 
 export const appConfig: ApplicationConfig = {
   providers: [

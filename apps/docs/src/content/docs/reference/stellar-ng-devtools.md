@@ -1,13 +1,13 @@
 ---
 title: stellar-ng-devtools API
-description: API reference for @hypertheory/stellar-ng-devtools — the Angular NgRx Signal Store devtools library.
+description: API reference for @hypertheory-labs/stellar-ng-devtools — the Angular NgRx Signal Store devtools library.
 ---
 
 ## Setup
 
 ```ts
 // app.config.ts
-import { provideStellar, withHttpTrafficMonitoring } from '@hypertheory/stellar-ng-devtools';
+import { provideStellar, withHttpTrafficMonitoring } from '@hypertheory-labs/stellar-ng-devtools';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -159,7 +159,7 @@ window.__stellarDevtools.record.stopAndDownload()
 Add this to your project's `CLAUDE.md` to orient Claude automatically:
 
 ```markdown
-This app uses Stellar devtools (@hypertheory/stellar-ng-devtools).
+This app uses Stellar devtools (@hypertheory-labs/stellar-ng-devtools).
 To orient: call window.__stellarDevtools.describe() in the browser console.
 Full API: window.__stellarDevtools has snapshot(), history(), diff(), http(), record.
 Exercise the app before calling describe() — lazy-loaded stores only appear after their route is visited.

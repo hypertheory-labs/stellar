@@ -4,8 +4,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "@hypertheory/sanitize": ["./libs/sanitize/src/public-api.ts"],
-      "@hypertheory/stellar-ng-devtools": ["./libs/stellar-ng/src/public-api.ts"]
+      "@hypertheory-labs/sanitize": ["./libs/sanitize/src/public-api.ts"],
+      "@hypertheory-labs/stellar-ng-devtools": ["./libs/stellar-ng/src/public-api.ts"]
     },
     "strict": true,
     "noImplicitOverride": true,

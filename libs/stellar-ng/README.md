@@ -1,64 +1,109 @@
-# Stellardevtools
+# @hypertheory-labs/stellar-ng-devtools
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+In-browser developer overlay for Angular applications using NgRx Signal Store.
 
-## Code scaffolding
+- **State inspection** — see current state and recent diffs for every registered store
+- **HTTP monitoring** — fetch interceptor with causal linking to the state changes it produced
+- **Recording sessions** — capture a bounded interaction as a directed causal graph; export or view in the timeline
+- **AI-accessible snapshots** — `window.__stellarDevtools` API and "Copy for AI" export designed for AI coding assistants as first-class consumers
+- **Sanitization built in** — sensitive fields are redacted before they reach any surface; powered by `@hypertheory-labs/sanitize`
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+**[Full documentation →](https://stellar.hypertheory-labs.dev)**
+**[Live demo →](https://stellar-demo.hypertheory-labs.dev)**
 
-```bash
-ng generate component component-name
-```
+---
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the library, run:
+## Installation
 
 ```bash
-ng build stellardevtools
+npm install @hypertheory-labs/stellar-ng-devtools @hypertheory-labs/sanitize
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+Peer dependencies: Angular 21+, NgRx Signals 21+.
 
-### Publishing the Library
+---
 
-Once the project is built, you can publish your library by following these steps:
+## Quick start
 
-1. Navigate to the `dist` directory:
+**1. Add `provideStellar()` to your app config:**
 
-   ```bash
-   cd dist/stellardevtools
-   ```
+```ts
+// app.config.ts
+import { provideStellar, withHttpTrafficMonitoring } from '@hypertheory-labs/stellar-ng-devtools';
 
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // ...
+    provideStellar(
+      withHttpTrafficMonitoring()
+    ),
+  ],
+};
 ```
 
-## Running end-to-end tests
+**2. Register your stores with `withStellarDevtools()`:**
 
-For end-to-end (e2e) testing, run:
+```ts
+// user.store.ts
+import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
+import { sanitizeConfig } from '@hypertheory-labs/sanitize';
 
-```bash
-ng e2e
+export const UserStore = signalStore(
+  withState<UserState>({ ... }),
+  withStellarDevtools('UserStore', {
+    description: 'Authenticated user identity and session state.',
+    sourceHint: 'src/app/user.store.ts',
+    sanitize: sanitizeConfig<UserState>({
+      sessionToken: 'omitted',
+      apiKey: 'hashed',
+    }),
+  })
+);
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+**3. Add the overlay to your app template:**
 
-## Additional Resources
+```html
+<!-- app.component.html -->
+<router-outlet />
+<stellar-overlay />
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The overlay appears as a floating button in the corner. Click it to open the devtools panel.
+
+---
+
+## `window.__stellarDevtools`
+
+Available in development mode in the browser console:
+
+```ts
+window.__stellarDevtools.snapshot()           // all stores, current sanitized state
+window.__stellarDevtools.snapshot('UserStore') // specific store
+window.__stellarDevtools.history('UserStore', 10) // last N state snapshots
+window.__stellarDevtools.diff('UserStore')     // most recent diff
+window.__stellarDevtools.http()               // all captured HTTP events
+window.__stellarDevtools.describe()           // manifest of all registered stores
+
+window.__stellarDevtools.record.start('my session')
+window.__stellarDevtools.record.stop()
+window.__stellarDevtools.record.stopAndDownload()
+```
+
+---
+
+## Peer dependencies
+
+| Package | Version |
+|---|---|
+| `@angular/core` | ^21.2.0 |
+| `@angular/common` | ^21.2.0 |
+| `@angular/platform-browser` | ^21.2.0 |
+| `@ngrx/signals` | 21.0.0 |
+| `@hypertheory-labs/sanitize` | ^0.0.1 |
+
+---
+
+## License
+
+MIT © Jeffry Gonzalez

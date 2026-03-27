@@ -3,7 +3,7 @@ title: The Libraries
 description: An overview of the packages in the Stellar Devtools monorepo — what each one does and how they relate.
 ---
 
-## `@hypertheory/stellar-ng-devtools`
+## `@hypertheory-labs/stellar-ng-devtools`
 
 The Angular devtools library. Provides:
 
@@ -18,7 +18,7 @@ The Angular devtools library. Provides:
 
 ---
 
-## `@hypertheory/sanitize`
+## `@hypertheory-labs/sanitize`
 
 A standalone, framework-agnostic sanitization library. Zero dependency on the devtools — usable in event sourcing pipelines, logging, or anywhere else sensitive values need to be transformed before leaving a trust boundary.
 

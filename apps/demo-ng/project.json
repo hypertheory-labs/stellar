@@ -51,6 +51,15 @@
               "with": "apps/demo-ng/src/environments/environment.development.ts"
             }
           ]
+        },
+        "demo": {
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/demo-ng/src/environments/environment.ts",
+              "with": "apps/demo-ng/src/environments/environment.demo.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "production",

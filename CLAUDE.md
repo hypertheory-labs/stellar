@@ -100,7 +100,7 @@ artifact that unlocks the use cases in `docs/use-case-log.md`.
 ## Architecture Commitments
 
 **Framework-agnostic core.** The registry protocol, snapshot types, sanitization pipeline, and
-`window.__stellarDevtools` surface belong in a framework-agnostic core (`@hypertheory/stellar-core`
+`window.__stellarDevtools` surface belong in a framework-agnostic core (`@hypertheory-labs/stellar-core`
 or equivalent). Angular is the first adapter, not the assumed host. Before adding anything to
 `with-stellar-devtools.ts` that assumes Angular internals, ask whether it belongs in the core
 instead.
@@ -110,7 +110,7 @@ pattern is agreed on. Core is minimal and stable; plugins extend the `window.__s
 surface with namespaced data. Each plugin carries its own config — this is the main argument
 against defaulting anything in.
 
-**Sanitization as a standalone package.** `@hypertheory/sanitize` **is implemented** as an
+**Sanitization as a standalone package.** `@hypertheory-labs/sanitize` **is implemented** as an
 independent library in this monorepo. It has zero dependency on the devtools — usable in event
 sourcing pipelines, logging, etc. `withStellarDevtools` wires it in directly (not via a separate
 `withStateSanitization()` plugin — that plugin abstraction is still a future design question).
@@ -131,7 +131,7 @@ target shape is in `docs/ai-accessibility.md`.
 
 ## Current State of the Sanitizer
 
-`@hypertheory/sanitize` is **fully implemented** and live in the library at
+`@hypertheory-labs/sanitize` is **fully implemented** and live in the library at
 `projects/hypertheory/sanitize/src/lib/sanitation.ts`. The prototype at `docs/sanitation.ts`
 is now a historical artifact — the library is the source of truth.
 
@@ -153,7 +153,7 @@ calls this on every state snapshot and merges the result with any explicit `sani
 (explicit config always wins via spread: `{ ...autoRedactConfig(raw), ...options.sanitize }`).
 
 **Typed helper**: `sanitizeConfig<T>(config)` — identity function at runtime, provides
-`SanitizationConfig<T>` typing at the call site. Re-exported from `@hypertheory/stellardevtools`
+`SanitizationConfig<T>` typing at the call site. Re-exported from `@hypertheory-labs/stellardevtools`
 so consumers don't need a separate import.
 
 ### Key design decisions (do not revisit without good reason)
@@ -168,7 +168,7 @@ so consumers don't need a separate import.
 ### Still to do
 
 - **Tier 3**: `createSanitizer()` factory for domain-specific aliases. See `overview.md` backlog.
-- **`@hypertheory/sensitive`**: tagged-class approach for cross-cutting policy-based sanitization.
+- **`@hypertheory-labs/sensitive`**: tagged-class approach for cross-cutting policy-based sanitization.
   See Phase X discussion in `docs/ai-accessibility.md`.
 - **Reconcile `docs/sanitizer.md`**: early design doc used function-call style (`redact()`, `omit()`).
   The implementation went with string literals. That doc should be treated as historical —
@@ -201,12 +201,12 @@ so consumers don't need a separate import.
 
 ## Current Implementation Status
 
-### `@hypertheory/sanitize` — DONE
+### `@hypertheory-labs/sanitize` — DONE
 `libs/sanitize/src/lib/sanitation.ts` + full test suite.
 All Tier 1 (named rules), Tier 2 (parameterized operators), `arrayOf()`, `sanitizeConfig<T>()`,
 and `autoRedactConfig()` are implemented and tested.
 
-### `@hypertheory/stellar-ng-devtools` — Functional
+### `@hypertheory-labs/stellar-ng-devtools` — Functional
 - `withStellarDevtools(name, options)` — hooks into NgRx Signal Store, records sanitized state
   - `options.description` — dev-mode warning if absent; appears in `describe()`
   - `options.sourceHint` — file path hint for AI consumers

@@ -14,12 +14,12 @@ ng-packagr will copy into the dist output. Do this before any build.
 
 ```json
 {
-  "name": "@hypertheory/sanitize",
+  "name": "@hypertheory-labs/sanitize",
   "version": "0.0.1",
   "description": "State sanitization library for developer tools — redact, mask, and transform sensitive fields before they reach any observer.",
   "keywords": ["sanitize", "redact", "state", "devtools", "ngrx", "angular"],
   "license": "MIT",
-  "homepage": "https://stellar-devtools.dev/reference/sanitize/",
+  "homepage": "https://stellar.hypertheory-labs.dev/reference/sanitize/",
   "repository": {
     "type": "git",
     "url": "https://github.com/YOUR_ORG/stellar.git",  // jeffrygonzalez or hypertheory-labs — decide first
@@ -42,12 +42,12 @@ ng-packagr will copy into the dist output. Do this before any build.
 
 ```json
 {
-  "name": "@hypertheory/stellar-ng-devtools",
+  "name": "@hypertheory-labs/stellar-ng-devtools",
   "version": "0.0.1",
   "description": "In-browser developer overlay for NgRx Signal Store — state inspection, diffs, HTTP monitoring, and AI-accessible snapshots.",
   "keywords": ["ngrx", "signals", "angular", "devtools", "state", "debugging", "ai"],
   "license": "MIT",
-  "homepage": "https://stellar-devtools.dev",
+  "homepage": "https://stellar.hypertheory-labs.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/YOUR_ORG/stellar.git",  // same as above — fill in together
@@ -60,7 +60,7 @@ ng-packagr will copy into the dist output. Do this before any build.
     "@angular/common": "^21.2.0",
     "@angular/core": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
-    "@hypertheory/sanitize": "^0.0.1",
+    "@hypertheory-labs/sanitize": "^0.0.1",
     "@ngrx/signals": "21.0.0"
   },
   "dependencies": {
@@ -89,7 +89,7 @@ example, link to full docs, peer dep note (none — this is standalone), license
 
 Needs: `provideStellar()` + `withStellarDevtools()` quick-start (copy from the Getting
 Started guide), peer dependency table (Angular 21, NgRx Signals 21,
-`@hypertheory/sanitize`), link to full docs + overlay screenshot, license badge.
+`@hypertheory-labs/sanitize`), link to full docs + overlay screenshot, license badge.
 
 ---
 
@@ -105,11 +105,11 @@ nx build stellar-ng --configuration production
 # - README.md (your updated one)
 # - *.d.ts files
 # - fesm2022/ or esm2022/ directory
-ls dist/hypertheory/sanitize/
+ls dist/hypertheory-labs/sanitize/
 ls dist/stellar-ng/
 
 # Dry-run publishes — reads exactly what npm would upload
-cd dist/hypertheory/sanitize && npm publish --dry-run
+cd dist/hypertheory-labs/sanitize && npm publish --dry-run
 cd ../../stellar-ng && npm publish --dry-run
 ```
 
@@ -129,43 +129,56 @@ Review the dry-run file list. Things to watch for:
 
 ---
 
-## Phase 5 — Docs site on Vercel (30 min)
+## Phase 5 — Deploy to Cloudflare Pages (30 min)
 
-The docs site is an Astro Starlight app at `apps/docs/`.
+Two separate Cloudflare Pages projects: one for the docs site, one for the demo app.
+Both live under your existing `hypertheory-labs.dev` domain — no DNS work outside of
+Cloudflare's own panel.
 
-### Initial Vercel deploy
+`astro.config.mjs` already has `site: 'https://stellar.hypertheory-labs.dev'` set.
+
+### Project 1: Docs site → `stellar.hypertheory-labs.dev`
 
 1. Push the repo to GitHub if not already there
-2. Go to vercel.com → Add New Project → Import from GitHub
-3. Vercel will auto-detect Astro. Override the defaults:
-   - **Root directory:** `apps/docs`
-   - **Build command:** `npm run build` (or `astro build`)
-   - **Output directory:** `dist`
-   - **Node version:** 20 or 22
+2. Go to dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git
+3. Select the repo, then set:
+   - **Build command:** `npx nx build docs`
+   - **Build output directory:** `apps/docs/dist`
+   - **Root directory:** *(leave blank — nx handles it)*
+   - **Node version env var:** `NODE_VERSION = 22`
 4. Deploy — verify the preview URL works
+5. In the Pages project → Custom domains → Add `stellar.hypertheory-labs.dev`
+   - Cloudflare auto-creates the CNAME and provisions TLS (it already manages your DNS)
 
-### Custom domain
+### Project 2: Demo app → `stellar-demo.hypertheory-labs.dev`
 
-1. In Vercel project settings → Domains → Add `stellar-devtools.dev`
-2. Vercel gives you DNS records (usually a CNAME + A record for apex)
-3. Add them in your registrar's DNS settings
-4. Propagation takes 5–60 min; Vercel auto-provisions TLS
+1. Create a second Pages project from the same repo
+2. Set:
+   - **Build command:** `npx nx build demo-ng --configuration demo`
+   - **Build output directory:** `dist/demo-ng/browser`
+   - **Node version env var:** `NODE_VERSION = 22`
+3. Deploy — verify the preview URL, confirm MSW is active (console should log *"MSW active — API calls to /api/* are intercepted."*)
+4. Add custom domain `stellar-demo.hypertheory-labs.dev`
 
-### Make sure `astro.config.mjs` has the correct `site` URL
+### SPA routing for the demo app
 
-```js
-// apps/docs/astro.config.mjs
-export default defineConfig({
-  site: 'https://stellar-devtools.dev',
-  // ...
-})
+Angular is a SPA — Cloudflare Pages needs a `_redirects` file to send all routes to
+`index.html`. Add this file to `apps/demo-ng/public/_redirects`:
+
+```
+/* /index.html 200
 ```
 
-This matters for canonical links, the sitemap plugin, and llms.txt generation.
+The `public/` directory is copied into the build output by the Angular build, so this
+will land at the root of `dist/demo-ng/browser/` automatically.
 
 ---
 
 ## Phase 6 — GitHub Actions (1 hour)
+
+**Note on Cloudflare Pages deployments:** Cloudflare Pages has its own build pipeline that
+triggers automatically on push — you don't need a GitHub Actions job for deploying the docs
+or demo app. GitHub Actions only needs to handle tests and npm publishing.
 
 Create `.github/workflows/`. Two workflows cover everything.
 
@@ -234,13 +247,13 @@ jobs:
       - run: nx build sanitize --configuration production
       - run: nx build stellar-ng --configuration production
 
-      - name: Publish @hypertheory/sanitize
+      - name: Publish @hypertheory-labs/sanitize
         run: npm publish --provenance --access public
-        working-directory: dist/hypertheory/sanitize
+        working-directory: dist/hypertheory-labs/sanitize
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish @hypertheory/stellar-ng-devtools
+      - name: Publish @hypertheory-labs/stellar-ng-devtools
         run: npm publish --provenance --access public
         working-directory: dist/stellar-ng
         env:
@@ -294,6 +307,6 @@ release notes.
 
 ## Publish order
 
-Always publish `@hypertheory/sanitize` before `@hypertheory/stellar-ng-devtools`.
+Always publish `@hypertheory-labs/sanitize` before `@hypertheory-labs/stellar-ng-devtools`.
 stellar-ng lists sanitize as a peer dependency — if sanitize isn't on npm yet, anyone who
 tries to install stellar-ng will get a peer dep warning or resolution failure.

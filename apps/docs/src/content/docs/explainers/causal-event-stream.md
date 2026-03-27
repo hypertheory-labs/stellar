@@ -1,6 +1,9 @@
-# Causal Event Stream — Design Notes
+---
+title: Causal Event Streams and the Playwright Observer
+description: Design notes on recovering the causal chain that NgRx Signal Store trades for ergonomics — and how a Playwright-integrated observer could deliver it.
+---
 
-*From conversation, March 2026.*
+*Design notes from conversation, March 2026. This describes planned/future work — the concepts inform the architecture but the Playwright observer is not yet implemented.*
 
 ---
 
@@ -34,7 +37,7 @@ That sequence — user intent, network effect, state outcome — is a complete d
 
 ## The Mechanism: Instrumented Monkey-Patching
 
-Zone.js pioneered this model in Angular: patch the platform primitives, track causality across async boundaries. Angular is moving toward zoneless — but the *model* is valid independently of Zone.js. A lightweight, purpose-built observer patches just what it needs and nothing more:
+Zone.js pioneered this model in Angular: patch the platform primitives, track causality across async boundaries. Angular is moving toward zoneless — but the *model* is valid independently of Zone.js. A lightweight, purpose-built observer patches just what it needs:
 
 ```ts
 // Network causality
@@ -68,9 +71,6 @@ The observer is unpatched on teardown. It has no production footprint.
 | User interaction | `document` capture listener | Click, input, navigation intent |
 | State changes | Store method wrapping (already in `withStellarDevtools`) | Before/after values, method name as trigger |
 | Navigation | History API | Route transitions |
-| Performance | `PerformanceObserver` | Long tasks, resource timing |
-
-Together these produce a causal chain that connects user intent → network effect → state outcome.
 
 ---
 
@@ -99,12 +99,12 @@ Events flow: browser → `console.log` → Playwright listener → local file / 
 ### What this enables
 
 - **Post-test AI debugging**: attach the event log to a failed test and hand it to an AI. The AI has the full causal chain, not just the assertion failure.
-- **Conditional capture**: start recording detailed traces only when a condition is met (see Alerts section below).
+- **Conditional capture**: start recording detailed traces only when a condition is met (see watchpoints below).
 - **Regression context**: compare event logs between passing and failing runs to find where the causal chain diverges.
 
 ---
 
-## Conditional Alerts / Watchpoints
+## Conditional Watchpoints
 
 A state-level equivalent of conditional debugger breakpoints:
 
@@ -123,31 +123,6 @@ Three modes:
 - **`record`** — begin capturing a detailed trace when condition is met. Low overhead normally, rich context on demand.
 
 The Playwright connection: a watch condition can trigger a screenshot + full state dump automatically. "When this error state appears, capture everything without me having to notice and react."
-
----
-
-## Where This Sits on the Safe/Scary Spectrum
-
-The key variable is **where the stream goes**, not the instrumentation itself.
-
-| Destination | Assessment |
-|---|---|
-| `window.__stellarObserver` (in-browser, developer reads it) | Safe |
-| `console.log` captured by Playwright locally | Safe |
-| Local WebSocket to sidecar (localhost only) | Safe |
-| External endpoint | Do not do this |
-
-**Scoped to test sessions**, this is low risk:
-- Playwright controls a clean Chromium instance with no real credentials
-- No external connections
-- Developer initiates every run
-- Instrumentation is injected, not persistent
-
-**In the real browser during dev**, risk increases slightly:
-- The dev app may carry dev tokens
-- `fetch` interception captures all network including auth headers — auth headers should be redacted before logging, same as state sanitization
-
-The same sanitization principle that governs state snapshots applies here: **no unsanitized data enters the log**. Auth headers stripped. Sensitive field names redacted per the `@hypertheory-labs/sanitize` blocklist.
 
 ---
 
@@ -170,30 +145,26 @@ The correlator's label priority order:
 4. `tagName.toLowerCase()` — fallback
 
 **Why this matters for AI correlation:** a history entry showing `click: "increment"` is
-directly correlatable to the `increment()` method in the store source — no method wrapping
-required. The label is the bridge between the UI event and the code.
+directly correlatable to the `increment()` method in the store source. The label is the bridge
+between the UI event and the code.
 
-**Follows established conventions.** Teams already using `data-testid` for Playwright/Cypress
-will find this immediately familiar. The attribute is inert to the application, survives
-minification, and works in any framework. It is a seam for tooling, not application logic.
-
-**Future extension point.** `data-stellar-label` is the first in a potential family of
-`data-stellar-*` attributes. Candidates for later:
-- `data-stellar-ignore` — exclude an element from click capture (UI chrome, devtools-adjacent elements)
-- `data-stellar-action` — explicitly name the semantic action rather than the UI label
-
-For now: `data-stellar-label` only. Keep it simple until there's a concrete need.
+Teams already using `data-testid` for Playwright/Cypress will find this immediately familiar.
+The attribute is inert to the application, survives minification, and works in any framework.
 
 ---
 
-## Relationship to Stellar's Existing Architecture
+## Safety
 
-This is a natural extension of what `withStellarDevtools` already does:
+The key variable is **where the stream goes**, not the instrumentation itself.
 
-- **State diffs** → already recorded per snapshot. The observer adds the *why* (what user action or network event preceded the change).
-- **`trigger` field** in the snapshot format → the observer is what populates this field reliably.
-- **`window.__stellarDevtools`** → the observer contributes a complementary `window.__stellarObserver` surface, or extends the existing one with a `stream()` / `events()` method.
-- **Plugin architecture** → `withPlaywrightObserver()` is the natural packaging: a plugin that registers nothing in production and activates only when Playwright (or another test runner) injects the init script.
+| Destination | Assessment |
+|---|---|
+| `window.__stellarObserver` (in-browser, developer reads it) | Safe |
+| `console.log` captured by Playwright locally | Safe |
+| Local WebSocket to sidecar (localhost only) | Safe |
+| External endpoint | Do not do this |
+
+The same sanitization principle that governs state snapshots applies here: **no unsanitized data enters the log**. Auth headers stripped. Sensitive field names redacted per the `@hypertheory-labs/sanitize` blocklist.
 
 ---
 
@@ -211,10 +182,4 @@ The event log format should be designed as a first-class AI-readable artifact al
 
 ---
 
-## Open Questions
-
-- Should `window.__stellarObserver` be a separate surface or integrated into `window.__stellarDevtools` as a `stream()` / `events()` method?
-- What is the right granularity for user interaction capture? Full DOM path vs. just tag + label vs. `data-testid` only?
-- Should the event log be append-only with a size cap, or ring-buffer (fixed N most recent)?
-- Auth header redaction: automatic (strip `Authorization` always) or configurable?
-- Should this work outside Playwright — e.g., injected via a browser extension in a dev session?
+*Design notes from March 2026. The concepts here inform how the existing trigger/causal system was designed. `withPlaywrightObserver()` as a dedicated package is future work.*

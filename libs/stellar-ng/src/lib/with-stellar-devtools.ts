@@ -2,7 +2,7 @@ import { inject, effect } from '@angular/core';
 import { signalStoreFeature, withHooks, getState } from '@ngrx/signals';
 import { StellarRegistryService } from './stellar-registry.service';
 import { RegisterOptions } from './models';
-import { SanitizationConfig, sanitized as applySanitized, autoRedactConfig } from '@hypertheory/sanitize';
+import { SanitizationConfig, sanitized as applySanitized, autoRedactConfig } from '@hypertheory-labs/sanitize';
 
 interface StellarDevtoolsOptions extends RegisterOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

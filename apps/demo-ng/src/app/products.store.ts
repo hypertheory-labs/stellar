@@ -1,6 +1,6 @@
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { computed } from '@angular/core';
-import { withStellarDevtools } from '@hypertheory/stellar-ng-devtools';
+import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
 
 export interface Product {
   id: string;

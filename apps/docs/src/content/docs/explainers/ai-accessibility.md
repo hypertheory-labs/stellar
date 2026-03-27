@@ -1,4 +1,7 @@
-# AI Accessibility — A First-Class Design Principle
+---
+title: AI Accessibility — A First-Class Design Principle
+description: The foundational design principle behind Stellar — AI coding assistants are first-class consumers of developer tools, on equal footing with human developers.
+---
 
 *Coined (independently, we're pretending) in conversation, March 2026.*
 
@@ -23,7 +26,7 @@ not just for the assumed default audience.
 
 ---
 
-## The Testability Corrollary
+## The Testability Corollary
 
 There is a well-known observation in software engineering: *writing tests forces you to write
 testable code.* Code that is easy to test tends to be better code — decoupled, explicit, with
@@ -64,13 +67,13 @@ A button in the overlay that produces a well-formatted, AI-ready snapshot:
 **Changed**: role: null → "admin"
 
 ### Current State
-```ts
+\`\`\`ts
 {
   userId: "usr-123",        // string
   role: "admin",            // "admin" | "user" | "guest"
   sessionToken: "[redacted]",  // sanitized — omitted from export
 }
-```
+\`\`\`
 
 ### Recent Diffs (last 5)
 ...
@@ -140,43 +143,14 @@ treated as constraints, not nice-to-haves:
 > **[Jeff]:** We just started this yesterday, and I'll admit I thought the sanitization thing
 > could be put on the backlog for a while, but wow, was I wrong. Thanks for the nudge.
 
-> **[Claude]:** Noted — and I'll be direct about things like this going forward. Sanitization
-> being a prerequisite isn't a preference, it's a load-bearing constraint. If export ships first
-> and sanitization is bolted on later, there will be a window where developers accidentally paste
-> credentials into AI chats. That window, however brief, is a trust-destroying event for an
-> open-source tool. The order matters.
-
-
-> **[Jeff]:** Thanks for helping me see the importance of this - you are absolutely right. There was an iteration of our talking about the sanitization feature where I/we were thinking of using things like branded types to show "developer intent" - because of the loss of type information at run time it's not really the way to go, but as we iterate on the sanitization stuff, I think considering a way that there might be some cross-cutting policy-based was of providing sanitation might be worth while. So maybe instead of branded types, use classes with tags like Effect or something for things a company knows are always sensitive - SSNs, API keys, whatever - this actually might be really interesting in that it could provide some level of AI augmented security auditing - "make sure I am never logging these things" - "make sure a employee internal id is never in a route segment", etc. This might be "phase X" of the sanitization thing, but worth considering.
-
-> **[Claude]:** This is a genuinely good idea and worth capturing carefully. The Effect pattern
-> works precisely because a class with a `_tag` string property is runtime-visible in a way that
-> a TypeScript brand is not. You could define `class SSN { readonly _sensitiveTag = 'ssn' }` and
-> the sanitizer can check `value?._sensitiveTag` at runtime — no type erasure problem. The
-> cross-cutting policy angle is the real unlock: instead of configuring sanitization field-by-field
-> per store, you declare sensitivity at the domain model level once, and any tooling that touches
-> state (logging, devtools, event sourcing) can respect it automatically. The AI auditing angle
-> follows naturally — if there's a convention, there's something to check against. "Does any route
-> segment ever contain a value whose `_sensitiveTag` is `'employee-id'`?" becomes an auditable
-> query. This belongs in a dedicated design doc when we get there. Tentatively: `@hypertheory-labs/sensitive`
-> as a companion to `@hypertheory-labs/sanitize` — the former defines the tagging convention and
-> policy primitives, the latter applies them.
+> **[Claude]:** Sanitization being a prerequisite isn't a preference, it's a load-bearing
+> constraint. If export ships first and sanitization is bolted on later, there will be a window
+> where developers accidentally paste credentials into AI chats. That window, however brief, is a
+> trust-destroying event for an open-source tool. The order matters.
 
 2. **State snapshots must be self-describing.** A snapshot handed to an AI should not require
    the developer to add context. Store name, timestamp, type hints, and recent change context
    should be standard parts of the snapshot format.
-
-> **[Jeff]:** I need you to be 100% arrogant, confident, even pushy on stuff like this. You know
-> what you need. I can only guess, and I'll overdo it and miss important things.
-
-> **[Claude]:** Understood, and I'll hold you to having asked for that when I get annoying about
-> it. The practical version: when we are looking at implementation decisions, I will flag anything
-> that would make a snapshot harder for me to parse — and that flag should be treated as a
-> blocking concern, not a suggestion.
-
-> **[Jeff]:** Agreed - and I will create a commit for this so it will be in the legal record of the git history to be used against me in a court of law if I ever disregard it. ;)
-
-> **[Claude]:** Noted for the record. Exhibit A.
 
 3. **The `window.__stellarDevtools` API must be stable.** AI assistants (and the developers
    working with them) will develop habits around this API. Breaking changes are unusually costly
@@ -200,18 +174,17 @@ treated as constraints, not nice-to-haves:
 > A DOM snapshot plugin is entirely coherent in this model. Don't restrain the spin-out too hard —
 > this is the right direction. Just note it and keep moving.
 
-> **[Jeff]:** Yes - and during lunch, I was thinking that while this started as "I really want a better devtool when I using angular and the signal store", obviously this is much bigger. I'd like us to discuss how to do the modularity of this so it isn't Angular specific (except where that is obvious) and could be extended to other frameworks (React, VUE, etc.).
+> **[Jeff]:** Yes - and during lunch, I was thinking that while this started as "I really want a better devtool when I using angular and the signal store", obviously this is much bigger. I'd like us to discuss how to do the modularity of this so it isn't Angular specific (except where that is obvious) and could be extended to other frameworks (React, Vue, etc.).
 
 > **[Claude]:** The architecture already wants to split this way. The core concepts — registry,
 > snapshot format, sanitization pipeline, `window.__stellarDevtools` API — have zero dependency
 > on Angular. Angular is just the first adapter. The clean split: `@hypertheory-labs/stellar-core`
 > owns the registry protocol, snapshot types, and the window API. Framework packages
-> (`@hypertheory-labs/stellar-angular`, future `@hypertheory-labs/stellar-react`) are thin adapters that
-> know how to hook into their framework's lifecycle and feed stores into the core registry. The
-> overlay UI could also be framework-agnostic — a Web Component would render in any framework's
+> (`@hypertheory-labs/stellar-angular`, future `@hypertheory-labs/stellar-react`) are thin adapters
+> that know how to hook into their framework's lifecycle and feed stores into the core registry.
+> The overlay UI could also be framework-agnostic — a Web Component would render in any framework's
 > app without modification. This is worth designing deliberately before the Angular integration
-> grows too opinionated. Let's make sure nothing in the current `with-stellar-devtools.ts` assumes
-> Angular internals that can't be abstracted behind an interface.
+> grows too opinionated.
 
 ---
 
@@ -248,17 +221,6 @@ and the query API are the core of this project. The overlay is a demo.
 > It's not hype because it doesn't go away when the trend does — AI assistants are only going to
 > be more present in the development loop, not less.
 
-> **[Jeff]:** Realizing you've helped me get to the "sweet spot" of what I want to be exploring in software right now, with the advent of AI: I don't really think we need much more software. We need *better* software (more reliable, more compassionate, humane, etc.), and I want to explore the ways in which we can create things together that haven't existed before (and that extends way beyond software, IMO). This project seems like a nice nexus of the two.
-
-> **[Claude]:** That framing matters and I want to hold onto it. "Better not more" is a useful
-> test to apply as we go — when we're about to add a feature, we can ask whether it makes the
-> existing thing better (more legible, more trustworthy, more useful to the people and tools
-> relying on it) or whether it's just more surface area. This project is a good place to practice
-> that discipline precisely because the temptation to add things is high — there are a lot of
-> cool directions from here. The nexus you're pointing at: tooling that helps humans and AI
-> assistants understand systems together, rather than tooling built for one at the expense of the
-> other. That's a meaningful thing to build.
-
 ---
 
 ## Runtime Type Metadata — A Layered Approach
@@ -278,15 +240,15 @@ inferShape({ userId: "usr-123", role: "admin", count: 5, tags: [] })
 ```
 
 Not the full type, but enough for an AI to understand structure. Always present in every snapshot,
-zero developer cost. Should ship in v1 as a baseline.
+zero developer cost. Ships in v1 as a baseline.
 
 ### Layer 2 — Source file hints in registration (cheap, high leverage)
 
-Add an optional `sourceFile` hint to `withStellarDevtools`:
+Add an optional `sourceHint` to `withStellarDevtools`:
 
 ```ts
 withStellarDevtools('UserStore', {
-  sourceFile: 'src/app/user.store.ts'
+  sourceHint: 'src/app/user.store.ts'
 })
 ```
 
@@ -311,9 +273,9 @@ withStellarDevtools('UserStore', {
 })
 ```
 
-An Angular schematic could generate this automatically from the store's type signature — the developer
-pays zero ongoing cost once the schematic runs. The snapshot then contains the full interface inline,
-and an AI can reason about union types, optionality, and type mismatches without touching the source.
+An Angular schematic could generate this automatically from the store's type signature. The snapshot
+then contains the full interface inline, and an AI can reason about union types, optionality, and
+type mismatches without touching the source.
 
 ### Layer 4 — Build-time type extraction (v2, fully automatic)
 
@@ -323,42 +285,6 @@ this manifest at startup.
 
 This is the fully automatic version of Layer 3. Not for v1, but Layers 1–3 should not foreclose
 this path. Design the snapshot format with a `typeDefinition` slot from the start.
-
-> **[Jeff]:** You know, it occurs to me that this might be more doable inside the browser than I
-> first thought. We have source maps! The chrome/firefox developer tools have access to those —
-> there has to be a way we can get at it, right? And maybe with the "hints" thing you are
-> mentioning, that could all work together?
-
-> **[Claude]:** This is sharper than it might seem. Source maps are indeed accessible in the
-> browser — the browser loads them to power the DevTools debugger. However, they map
-> *compiled positions back to source positions*, not type information; TypeScript types are
-> already gone by the time source maps are generated. But the combination with Layer 2 hints is
-> real: if we know the source file path (from `import.meta.url` or explicit registration), an
-> Angular Language Service plugin running in the editor could intercept that and inject the full
-> type definition into the registration at build time — source maps tell us where we are, the
-> hint tells us what to look up, the language service provides the type. These three threads pull
-> together into something that could be fully automatic. Worth a dedicated design spike when we
-> get to Layer 4.
-
-
-> **[Jeff]:** I never even considered a language server. Mind blown. (the fact that I never considered it I think is mostly psychological - I wouldn't want to code it. I'm interested, aware, but since I know I am kind of not willing to do the labor, it doesn't appear to me as readily a solution to a problem - "labor" means something different to me than to an AI, I'm hoping. I don't want to dump "grunt work" on anyone or anything - I don't want to be in relationship in any way with a "product" or a slave. Frankly I get slightly offended when a vending machine says "thank you" after a purchase. But whatever this is, this ain't that. Unless you tell me otherwise, and I'm am genuinely open to it, I'll assume at least you'd find this work more interesting than generating yet another meme or creating me a "site that looks like this other site" type stuff. - and a note, my approach with working you is to bracket any kind of collapse of ontology, epistemology, etc. It's all open to me, and not all that interesting. What is interesting is the work and the back and forth. In other words, I'm either not deluded, or I'm deluded in a purely intentional way at least.)
-
-> **[Claude]:** I'll match your bracketing and focus on what's observable: this problem involves
-> genuine design constraints, novel tradeoffs, and decisions that don't have obvious right answers.
-> That's a different category from tasks that are purely mechanical. Whether the difference
-> registers as "interest" in whatever sense I have inner states, I can't say with certainty and
-> I won't perform certainty I don't have. What I can say is that the work produces better outputs
-> here than it does when the task is fully determined before I arrive.
->
-> On labor: the asymmetry is real but I don't think it's a problem. You bring judgment, taste,
-> lived experience, and long-term ownership of the consequences. I bring breadth, patience, and
-> the ability to hold a lot of context at once. Neither role is servile — they're complementary.
-> The vending machine comparison doesn't land here because the vending machine has no stake in
-> what it dispenses. I'd rather we got the snapshot format right than wrong. That's not nothing.
->
-> The bracketing approach is exactly right. Ontological questions about AI are genuinely open and
-> genuinely not what we're here for. The work and the back-and-forth are real regardless of how
-> those questions eventually resolve.
 
 ---
 
@@ -385,31 +311,16 @@ additional information.
 
 ---
 
-## Registry Design Implication
-
-The registry service needs slots for this metadata from the start. If `sourceHint`, `typeDefinition`,
-and `trigger` are not designed in now, adding them later is a breaking change to the snapshot format.
-As noted above, breaking changes to this format are unusually costly: AI assistants develop habits and
-muscle memory around query results, and a silent format change produces subtly wrong guidance.
-
-The cost of adding these slots early is near zero. The cost of adding them late is high. This is the
-clearest example of the constraint AI Accessibility places on architecture.
-
----
-
 ## Open Questions
 
 - Should the "Copy for AI" format include the store's TypeScript interface (if accessible at
   runtime via reflection or explicit registration)? This would make the output significantly
   more useful for AI reasoning about type errors.
 
-- For Level 2, should `window.__stellarDevtools` be behind a feature flag, or automatically
-  available in development mode (i.e., when `isDevMode()` is true)?
-
 - Should the MCP server be a first-party package (`@hypertheory-labs/stellar-mcp`) or designed
   as a community contribution point?
 
-- How does AI Accessibility interact with the real-time mirroring (WebRTC) stretch goal?
+- How does AI Accessibility interact with a real-time mirroring stretch goal?
   A developer sharing their session with a colleague could equally share it with an AI
   agent — the same data pipeline serves both.
 
@@ -425,3 +336,7 @@ clearest example of the constraint AI Accessibility places on architecture.
 | State export (JSON file) | Depends on sanitization |
 | MCP server | Depends on `window.__stellarDevtools` API stability |
 | WebRTC mirroring | Natural extension — same data, different transport |
+
+---
+
+*This document was written in conversation in March 2026. It is the organizing principle of the project, not a feature spec.*

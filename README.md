@@ -1,13 +1,32 @@
 # Stellar Devtools
 
-An in-browser developer tool for Angular applications — closer to the Tanstack Query devtools than the Redux DevTools browser extension. The overlay runs inside the application, not as a browser extension.
+In-browser developer tools for Angular applications — state inspection, HTTP monitoring,
+recording sessions, and AI-accessible snapshots. Closer to the Tanstack Query devtools
+than the Redux DevTools browser extension: the overlay runs *inside* your app, not as a
+browser extension.
+
+**[Documentation →](https://stellar.hypertheory-labs.dev)**
+**[Live demo →](https://stellar-demo.hypertheory-labs.dev)**
+
+### Packages
+
+| Package | Description |
+|---|---|
+| [`@hypertheory-labs/stellar-ng-devtools`](libs/stellar-ng/) | Angular devtools overlay for NgRx Signal Store |
+| [`@hypertheory-labs/sanitize`](libs/sanitize/) | Standalone state sanitization library — redact sensitive fields before any observer sees them |
+
+---
+
+*This is the monorepo. If you're here to use the libraries, the [documentation site](https://stellar.hypertheory-labs.dev) is a better starting point.*
+
+---
 
 ## Workspace Structure
 
 ```
 libs/
-  sanitize/       @hypertheory/sanitize          — framework-agnostic sanitization library
-  stellar-ng/     @hypertheory/stellar-ng-devtools — Angular devtools library
+  sanitize/       @hypertheory-labs/sanitize          — framework-agnostic sanitization library
+  stellar-ng/     @hypertheory-labs/stellar-ng-devtools — Angular devtools library
 
 apps/
   demo-ng/        Angular demo application
@@ -29,14 +48,14 @@ nx serve demo-ng
 nx dev docs
 
 # Build a specific project
-nx build @hypertheory/sanitize
-nx build @hypertheory/stellar-ng-devtools
+nx build @hypertheory-labs/sanitize
+nx build @hypertheory-labs/stellar-ng-devtools
 nx build demo-ng
 nx build docs
 
 # Run unit tests (Jasmine/Jest)
-nx test @hypertheory/sanitize
-nx test @hypertheory/stellar-ng-devtools
+nx test @hypertheory-labs/sanitize
+nx test @hypertheory-labs/stellar-ng-devtools
 nx test demo-ng
 
 # Run Playwright e2e tests (requires demo-ng dev server already running)
@@ -97,15 +116,15 @@ The four spec files and what they cover:
 
 ### How caching works
 
-NX caches task outputs locally (in `.nx/cache`). If you run `nx build @hypertheory/sanitize`
+NX caches task outputs locally (in `.nx/cache`). If you run `nx build @hypertheory-labs/sanitize`
 twice without changing any source files, the second run is instant — it replays from cache.
 The build pipeline also respects dependencies: building `demo-ng` will automatically build
-`@hypertheory/stellar-ng-devtools` first if it hasn't been built yet.
+`@hypertheory-labs/stellar-ng-devtools` first if it hasn't been built yet.
 
 To force a fresh run, bypassing cache:
 
 ```bash
-nx build @hypertheory/sanitize --skip-nx-cache
+nx build @hypertheory-labs/sanitize --skip-nx-cache
 ```
 
 ### Angular CLI still works
@@ -114,7 +133,7 @@ NX wraps the Angular CLI — all your existing `ng` commands work unchanged:
 
 ```bash
 ng serve demo-ng
-ng build @hypertheory/sanitize
+ng build @hypertheory-labs/sanitize
 ng test demo-ng
 ng generate component my-component --project=demo-ng
 ```

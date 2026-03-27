@@ -66,7 +66,7 @@ Not called "lint mode" — static linters check code; this checks *runtime behav
 
 ---
 
-## User-defined semantic aliases in `@hypertheory/sanitize`
+## User-defined semantic aliases in `@hypertheory-labs/sanitize`
 
 `createSanitizer()` factory for domain-specific aliases. Consumers register custom aliases that extend `SanitizationRule` with their own keys, preserving the `satisfies`-based key narrowing:
 
