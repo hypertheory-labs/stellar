@@ -13,7 +13,7 @@ type ChaosState = 'off' | 'errors' | 'activating';
 
       <!-- Header -->
       <div class="flex items-start gap-3">
-        <a routerLink="/showcase" class="btn btn-ghost btn-sm btn-square mt-0.5">←</a>
+        <a routerLink="/ai-collaboration" class="btn btn-ghost btn-sm btn-square mt-0.5">←</a>
         <div>
           <h1 class="text-xl font-bold">Error path — dead letters</h1>
           <p class="text-sm text-base-content/60 mt-0.5">

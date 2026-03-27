@@ -15,7 +15,7 @@ interface Scenario {
   template: `
     <div class="grid gap-8">
       <div>
-        <h1 class="text-2xl font-bold mb-1">Scenarios</h1>
+        <h1 class="text-2xl font-bold mb-1">AI Collaboration</h1>
         <p class="text-base-content/60 text-sm max-w-2xl">
           Each scenario is a reproducible demo. Start recording in the Stellar overlay,
           perform the interaction, stop — then paste the <strong>Copy for AI</strong> output
@@ -37,7 +37,7 @@ interface Scenario {
                 </div>
                 <div class="flex-shrink-0 mt-1">
                   @if (scenario.status === 'ready') {
-                    <a [routerLink]="['/showcase', scenario.slug]"
+                    <a [routerLink]="['/ai-collaboration', scenario.slug]"
                        class="btn btn-sm btn-primary">Run demo</a>
                   } @else {
                     <span class="badge badge-outline badge-sm">Coming soon</span>

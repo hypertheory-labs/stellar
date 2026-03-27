@@ -12,6 +12,16 @@ import { injectDispatch } from '@ngrx/signals/events';
   template: `
     <div class="grid gap-8">
 
+      <div>
+        <h1 class="text-2xl font-bold mb-1">Basics</h1>
+        <p class="text-base-content/60 text-sm max-w-2xl">
+          Four simple stores — Counter, User, Books, and Todos — wired up with
+          <code class="text-primary">withStellarDevtools()</code>.
+          Open <strong>✦ Stellar</strong> in the bottom-right, pick a store, and interact.
+          Todos also exercises HTTP monitoring: load the list to see fetch events appear in the overlay.
+        </p>
+      </div>
+
       <!-- Counter -->
       <div class="card bg-base-200">
         <div class="card-body">

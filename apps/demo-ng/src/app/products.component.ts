@@ -8,6 +8,17 @@ import { ProductsStore } from './products.store';
   template: `
     <div class="grid gap-8">
 
+      <div>
+        <h1 class="text-2xl font-bold mb-1">Outbox</h1>
+        <p class="text-base-content/60 text-sm max-w-2xl">
+          Demonstrates the <strong>outbox pattern</strong> for async mutations.
+          Each add/update/delete lands in an outbox immediately, then drains as the server responds.
+          In-flight requests are tracked as pending; failures move to dead letters.
+          Open <strong>✦ Stellar</strong> and watch <code class="text-primary">ProductsStore</code>
+          to see state evolve across the full lifecycle of each mutation.
+        </p>
+      </div>
+
       <!-- Controls -->
       <div class="card bg-base-200">
         <div class="card-body">

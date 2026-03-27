@@ -15,12 +15,14 @@ import { StellarOverlayComponent } from '@hypertheory-labs/stellar-ng-devtools';
         <nav class="flex gap-1">
           <a routerLink="/" routerLinkActive="btn-active" [routerLinkActiveOptions]="{ exact: true }"
              class="btn btn-ghost btn-sm">Home</a>
+          <a routerLink="/basics" routerLinkActive="btn-active"
+             class="btn btn-ghost btn-sm">Basics</a>
+          <a routerLink="/outbox" routerLinkActive="btn-active"
+             class="btn btn-ghost btn-sm">Outbox</a>
           <a routerLink="/sanitize" routerLinkActive="btn-active"
              class="btn btn-ghost btn-sm">Sanitization</a>
-          <a routerLink="/products" routerLinkActive="btn-active"
-             class="btn btn-ghost btn-sm">Products</a>
-          <a routerLink="/showcase" routerLinkActive="btn-active"
-             class="btn btn-ghost btn-sm">Scenarios</a>
+          <a routerLink="/ai-collaboration" routerLinkActive="btn-active"
+             class="btn btn-ghost btn-sm">AI Collaboration</a>
         </nav>
       </div>
 
