@@ -57,7 +57,7 @@ Updated at the end of every session via `/capture`.
 - **TDR: Designing reproducible demos** — `apps/docs/src/content/docs/explainers/designing-reproducible-demos.md`
 
 ## Next
-1. **Cloudflare Pages deploy** — two projects: docs → `stellar.hypertheory-labs.dev`, demo → `stellar-demo.hypertheory-labs.dev`. Build configs and `_redirects` are ready; just needs Cloudflare UI setup.
+1. **CONTRIBUTORS.md** — needed before NgRx team invite (~2026-04-03). Contribution workflow, branching, PR expectations.
 2. **CONTRIBUTORS.md** — needed before NgRx team invite (~2026-04-03). Contribution workflow, branching, PR expectations.
 3. **Playwright tests** — timeline mode activation, `description`/`storeContext` in recording output, "Copy for AI" button, `http()` shape, `describe()` output shape
 4. **Showcase scenarios: coming-soon three** — missing test coverage, story card verification, CodeTour generation

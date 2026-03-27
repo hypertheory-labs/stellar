@@ -1,17 +1,16 @@
 # Jeff Log 
 
-
-- 2026-03-26 - D - I think we are close to being able to publish this (NPM) and creating the site. 
-  - Considering the site for the docs at `https://stellar.hypertheory.com` 
-    - It's my company website - and it is all about training now, but thinking if we put it there, it'll coax me to update the "company" website to more represent where I am now. 
-  - Realizing I haven't published an npm package in *years* - going to need some help setting this up. (Github actions, all that)
-  - If we do publish the demo-ng (like at 'https://demo-ng.hypertheory.com') what else should I be thinking about? 
-  - Last night I asked you to create a plan for this - it is at `/docs/publish-checklist.md` - how does that look?
-  
-- 2026-03-26 - C - I know we used MSW in the ng-demo - and they are gated behind a flag (Devmode) - wondering the implications of taking that gate out - if I wanted to publish this Angular app as a runnable demo on Vercel or Cloudflare? 
-  - I'm thinking it might be nice to have the demo-ng app deployed somewhere so developers can do some of this testing and experimentation themselves.
-
-- 2026-03-26 -  B - I'd like to discuss if we could generalize the outbox sample enough that it could be an `withStellarOutbox()` signal store feature.
-
+- 2026-03-27 - The Demo App
+  - It is now online at https://stellar-demo.hypertheory-labs.dev. 
+  - Thinking we might want to "shift" the routes and tabs.
+    - "Home" should be a quick overview of what this is - with a link back to the https://stellar.hypertheory-labs.dev docs.
+    - What is now "home" make "Basics"
+      - Put a small overview at the top of each demo with the associated name of the store to look for in the devtools.
+    - With is now "products" make "Outbox"
+      - Put a small overview at the top explaining the outbox.
+    - Sanitization
+      - Leave route as is, put a small overview at the top explaining how this is a demo of the sanitization features, and to look at the store.
+    - "Scenarios" - Rename to "AI Collaboration"
+      - The overview at the top is great. Maybe model the other overviews (above) based on this.
 
 

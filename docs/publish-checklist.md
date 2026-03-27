@@ -137,14 +137,24 @@ Cloudflare's own panel.
 
 `astro.config.mjs` already has `site: 'https://stellar.hypertheory-labs.dev'` set.
 
+### Cloudflare Pages gotchas (learned in production)
+
+- **Workers vs Pages:** The dashboard defaults to Workers when you click "Create". You want
+  Pages → Connect to Git. Easy to set up the wrong thing without realising.
+- **Root directory field:** Leave it blank. If you set it to `apps/docs` or similar, Cloudflare
+  throws "root directory not found". Nx handles project location via the build command.
+- **Docs build command:** `apps/docs` has its own `package.json` (not a root workspace member),
+  so `astro` isn't installed when `npm ci` runs at root. Use this build command instead:
+  `cd apps/docs && npm install && npx astro build`
+
 ### Project 1: Docs site → `stellar.hypertheory-labs.dev`
 
 1. Push the repo to GitHub if not already there
-2. Go to dash.cloudflare.com → Workers & Pages → Create → Pages → Connect to Git
+2. Go to dash.cloudflare.com → Workers & Pages → Create → **Pages** → Connect to Git
 3. Select the repo, then set:
-   - **Build command:** `npx nx build docs`
+   - **Build command:** `cd apps/docs && npm install && npx astro build`
    - **Build output directory:** `apps/docs/dist`
-   - **Root directory:** *(leave blank — nx handles it)*
+   - **Root directory:** *(leave blank)*
    - **Node version env var:** `NODE_VERSION = 22`
 4. Deploy — verify the preview URL works
 5. In the Pages project → Custom domains → Add `stellar.hypertheory-labs.dev`

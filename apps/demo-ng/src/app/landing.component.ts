@@ -58,7 +58,7 @@ import { RouterLink } from '@angular/router';
               </p>
               <div class="grid gap-1.5">
                 <code class="block bg-base-300 rounded px-3 py-1.5 text-xs font-mono">
-                  window.__stellarDevtools.snapshot('Counter')
+                  window.__stellarDevtools.snapshot('CounterStore')
                 </code>
                 <code class="block bg-base-300 rounded px-3 py-1.5 text-xs font-mono">
                   window.__stellarDevtools.describe()
