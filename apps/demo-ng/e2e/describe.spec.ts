@@ -12,7 +12,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('describe() API', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('describe is a function on window.__stellarDevtools', async ({ page }) => {

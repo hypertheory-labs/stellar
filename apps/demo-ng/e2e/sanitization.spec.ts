@@ -13,6 +13,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Sanitization', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/sanitize');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   async function getSensitiveState(page: any) {
@@ -187,6 +188,7 @@ test.describe('Blood/brain barrier — raw state never reaches export surfaces',
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/sanitize');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('rawReader is not accessible on window.__stellarDevtools', async ({ page }) => {

@@ -8,7 +8,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('window.__stellarDevtools API', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('API is exposed on window', async ({ page }) => {

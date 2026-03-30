@@ -16,7 +16,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('"Copy for AI" format', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   async function getAIFormat(page: any, storeName: string): Promise<string> {
@@ -98,6 +99,7 @@ test.describe('"Copy for AI" format', () => {
 
   test('AI format for SensitiveDataStore contains no raw secrets', async ({ page }) => {
     await page.goto('/sanitize');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
 
     const raw = await page.evaluate(() => {
       const entry = (window as any).__stellarDevtools.snapshot('SensitiveDataStore');

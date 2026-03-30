@@ -13,7 +13,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Trigger field', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   async function getLatestTrigger(page: any, storeName: string): Promise<string | undefined> {
@@ -96,8 +97,15 @@ test.describe('Trigger field', () => {
   });
 
   test('trigger reflects correct event for reset', async ({ page }) => {
-    // First increment so there's something to reset
+    // First increment so there's something to reset, then wait for its snapshot
+    const initialLen = await page.evaluate(() =>
+      (window as any).__stellarDevtools.snapshot('CounterStore')?.history.length ?? 0
+    );
     await page.click('button:has-text("+")');
+    await page.waitForFunction((prevLen: number) => {
+      const entry = (window as any).__stellarDevtools.snapshot('CounterStore');
+      return (entry?.history.length ?? 0) > prevLen;
+    }, initialLen);
 
     const before = await page.evaluate(() =>
       (window as any).__stellarDevtools.snapshot('CounterStore')?.history.length ?? 0

@@ -34,7 +34,8 @@ test.describe('http() API', () => {
       }
     });
 
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('http() is exposed on window.__stellarDevtools', async ({ page }) => {
@@ -157,7 +158,8 @@ test.describe('httpEventId on state snapshots', () => {
       });
     });
 
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('state snapshot produced by a fetch has httpEventId set', async ({ page }) => {

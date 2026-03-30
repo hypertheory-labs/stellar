@@ -36,7 +36,8 @@ async function waitForNewSnapshot(page: any, storeName: string, prevLen: number)
 
 test.describe('record API surface', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('record object has start, stop, stopAndDownload', async ({ page }) => {
@@ -80,7 +81,8 @@ test.describe('record API surface', () => {
 
 test.describe('RecordingSession shape', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('session has required top-level fields', async ({ page }) => {
@@ -130,7 +132,8 @@ test.describe('RecordingSession shape', () => {
 
 test.describe('state capture during recording', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('state-snapshot nodes appear for changes made during recording', async ({ page }) => {
@@ -226,7 +229,8 @@ test.describe('state capture during recording', () => {
 
 test.describe('edge wiring', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('edges array contains objects with from, to, label', async ({ page }) => {
@@ -317,7 +321,8 @@ test.describe('HTTP capture in recording', () => {
       }
     });
 
-    await page.goto('/');
+    await page.goto('/basics');
+    await page.waitForFunction(() => !!(window as any).__stellarDevtools);
   });
 
   test('http-request and http-response nodes appear for fetch during recording', async ({ page }) => {
