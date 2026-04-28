@@ -8,11 +8,21 @@ import { StellarRegistryService } from './stellar-registry.service';
 import { SnapshotWriterService } from './snapshot-writer.service';
 import { RecordingService } from './recording.service';
 import { AnyStellarFeature } from './stellar-feature';
-import { StoreInstance } from './models';
-
-interface InstanceQuery {
-  instance?: string;
-}
+import { RecordingSession, StateSnapshot, StoreEntry, StoreInstance } from './models';
+import {
+  DescribeResult,
+  DiffResult,
+  FormatForAIApi,
+  InstanceQuery,
+  StellarDevtoolsApi,
+} from './stellar-devtools-api';
+import {
+  formatAllStoresForAI,
+  formatHttpEventsForAI,
+  formatRecordingForAI,
+  formatStoreForAI,
+} from './format-for-ai';
+import { buildDescribeResult } from './build-describe';
 
 export function provideStellar(...features: AnyStellarFeature[]): EnvironmentProviders {
   const featureProviders = features.flatMap(f => f.providers);
@@ -41,52 +51,55 @@ export function provideStellar(...features: AnyStellarFeature[]): EnvironmentPro
         return active ?? all[all.length - 1];
       };
 
-      (window as any).__stellarDevtools = {
-        describe: () => ({
-          version: '1.1',
-          stores: registry.getAllStores().map(s => {
-            const totalSnapshots = s.instances.reduce((sum, i) => sum + i.history.length, 0);
-            return {
-              name: s.name,
-              description: s.description ?? null,
-              snapshotCount: totalSnapshots,
-              registeredAt: s.registeredAt - appStart,
-              destroyedAt: s.destroyedAt !== undefined ? s.destroyedAt - appStart : null,
-              sourceHint: s.sourceHint ?? null,
-              instances: s.instances.map(i => ({
-                id: i.id,
-                registeredAt: i.registeredAt - appStart,
-                destroyedAt: i.destroyedAt !== undefined ? i.destroyedAt - appStart : null,
-                snapshotCount: i.history.length,
-              })),
-            };
-          }),
-          api: ['snapshot', 'history', 'diff', 'http', 'record', 'describe'],
-          recordingActive: recorder.isRecording(),
-          caveat:
-            'Lazy-loaded routes may register additional stores. Navigate to all relevant ' +
-            'routes before calling describe() for full coverage. A store name may have ' +
-            'multiple instances over a session — each route mount or component-providers ' +
-            'scope creates a new one. snapshot()/history()/diff() default to the most ' +
-            'recent instance; pass { instance: id } to select a specific one.',
-        }),
-        snapshot: (name?: string, query?: InstanceQuery) => {
-          if (!name) return registry.getAllStores();
-          if (query?.instance) return resolveInstance(name, query) ?? null;
-          return registry.getStore(name) ?? null;
+      const describe = (): DescribeResult =>
+        buildDescribeResult(registry, recorder, appStart);
+
+      function snapshot(): StoreEntry[];
+      function snapshot(name: string): StoreEntry | null;
+      function snapshot(name: string, query: InstanceQuery): StoreEntry | StoreInstance | null;
+      function snapshot(name?: string, query?: InstanceQuery) {
+        if (!name) return registry.getAllStores();
+        if (query?.instance) return resolveInstance(name, query) ?? null;
+        return registry.getStore(name) ?? null;
+      }
+
+      const history = (
+        name: string,
+        n = 10,
+        query?: InstanceQuery,
+      ): StateSnapshot[] | null => {
+        const inst = resolveInstance(name, query);
+        return inst ? inst.history.slice(-n) : null;
+      };
+
+      const diff = (name: string, query?: InstanceQuery): DiffResult | null => {
+        // Cross-instance diffs are nonsense — state isn't continuous across
+        // re-mounts. diff() always operates within a single instance.
+        const inst = resolveInstance(name, query);
+        if (!inst || inst.history.length < 2) return null;
+        const h = inst.history;
+        return { from: h[h.length - 2], to: h[h.length - 1] };
+      };
+
+      const formatForAI: FormatForAIApi = {
+        store: (name: string) => {
+          const entry = registry.getStore(name);
+          if (!entry) return null;
+          return formatStoreForAI(entry, registry.getHttpEvents());
         },
-        history: (name: string, n = 10, query?: InstanceQuery) => {
-          const inst = resolveInstance(name, query);
-          return inst ? inst.history.slice(-n) : null;
+        all: () => formatAllStoresForAI(registry.getAllStores(), registry.getHttpEvents()),
+        http: () => formatHttpEventsForAI(registry.getHttpEvents(), registry.getAllStores()),
+        recording: (session?: RecordingSession) => {
+          const target = session ?? recorder.lastSession();
+          return target ? formatRecordingForAI(target) : null;
         },
-        diff: (name: string, query?: InstanceQuery) => {
-          // Cross-instance diffs are nonsense — state isn't continuous across
-          // re-mounts. diff() always operates within a single instance.
-          const inst = resolveInstance(name, query);
-          if (!inst || inst.history.length < 2) return null;
-          const h = inst.history;
-          return { from: h[h.length - 2], to: h[h.length - 1] };
-        },
+      };
+
+      const api: StellarDevtoolsApi = {
+        describe,
+        snapshot,
+        history,
+        diff,
         save: () => writer.save(registry.getAllStores()),
         http: () => registry.getHttpEvents(),
         record: {
@@ -98,7 +111,10 @@ export function provideStellar(...features: AnyStellarFeature[]): EnvironmentPro
             return session;
           },
         },
+        formatForAI,
       };
+
+      window.__stellarDevtools = api;
     }),
   ]);
 }

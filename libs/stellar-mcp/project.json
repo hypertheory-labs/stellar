@@ -1,0 +1,30 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@hypertheory-labs/stellar-mcp",
+  "projectType": "library",
+  "sourceRoot": "libs/stellar-mcp/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "cwd": "libs/stellar-mcp",
+        "command": "tsc -p tsconfig.lib.json"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/stellar-mcp",
+        "command": "vitest run --config vitest.config.ts"
+      }
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/stellar-mcp",
+        "command": "vitest run --config vitest.config.integration.ts"
+      }
+    }
+  }
+}

@@ -6,6 +6,7 @@ In-browser developer overlay for Angular applications using NgRx Signal Store.
 - **HTTP monitoring** — fetch interceptor with causal linking to the state changes it produced
 - **Recording sessions** — capture a bounded interaction as a directed causal graph; export or view in the timeline
 - **AI-accessible snapshots** — `window.__stellarDevtools` API and "Copy for AI" export designed for AI coding assistants as first-class consumers
+- **MCP bridge** — `withStellarBridge()` opens a WebSocket to a `stellar-mcp` server so AI agents can query live state without a browser automation harness
 - **Sanitization built in** — sensitive fields are redacted before they reach any surface; powered by `@hypertheory-labs/sanitize`
 
 **[Full documentation →](https://stellar.hypertheory-labs.dev)**
@@ -29,13 +30,20 @@ Peer dependencies: Angular 21+, NgRx Signals 21+.
 
 ```ts
 // app.config.ts
-import { provideStellar, withHttpTrafficMonitoring } from '@hypertheory-labs/stellar-ng-devtools';
+import {
+  provideStellar,
+  withHttpTrafficMonitoring,
+  withStellarBridge,
+} from '@hypertheory-labs/stellar-ng-devtools';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     // ...
     provideStellar(
-      withHttpTrafficMonitoring()
+      withHttpTrafficMonitoring(),
+      // Optional — only add when you want AI agents to query live state via
+      // @hypertheory-labs/stellar-mcp. Defaults to ws://localhost:4280/__stellar.
+      withStellarBridge(),
     ),
   ],
 };

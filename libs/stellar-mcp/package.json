@@ -1,0 +1,64 @@
+{
+  "name": "@hypertheory-labs/stellar-mcp",
+  "version": "0.0.1",
+  "description": "Model Context Protocol server that exposes Stellar Devtools state, HTTP traffic, and recordings to AI coding agents over stdio.",
+  "keywords": [
+    "stellar",
+    "devtools",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "ngrx",
+    "angular",
+    "websocket"
+  ],
+  "license": "MIT",
+  "homepage": "https://stellar.hypertheory-labs.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hypertheory-labs/stellar.git",
+    "directory": "libs/stellar-mcp"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "./dist/public-api.js",
+  "types": "./dist/public-api.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/public-api.d.ts",
+      "import": "./dist/public-api.js"
+    }
+  },
+  "bin": {
+    "stellar-mcp": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "test:integration": "vitest run --config vitest.config.integration.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.13",
+    "tsup": "^8.5.1"
+  },
+  "peerDependencies": {
+    "@hypertheory-labs/stellar-ng-devtools": ">=0.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "sideEffects": false
+}

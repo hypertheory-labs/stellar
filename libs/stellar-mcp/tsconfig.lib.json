@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "paths": {
+      "@hypertheory-labs/stellar-ng-devtools": ["../../libs/stellar-ng/src/public-api.ts"],
+      "@hypertheory-labs/sanitize": ["../../libs/sanitize/src/public-api.ts"],
+      "@hypertheory-labs/stellar-mcp": ["./src/public-api.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/__tests__/**"
+  ]
+}

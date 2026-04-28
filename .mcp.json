@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "stellar": {
+      "command": "node",
+      "args": ["libs/stellar-mcp/dist/cli.js"],
+      "env": {}
+    }
+  }
+}
