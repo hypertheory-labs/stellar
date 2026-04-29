@@ -66,6 +66,8 @@ npm install --save-dev @hypertheory-labs/stellar-mcp @hypertheory-labs/stellar-n
    }
    ```
 
+   For VS Code (Copilot agent mode), Codex CLI, and the "one tool at a time" gotcha, see the [Connecting AI tools](https://stellar.hypertheory-labs.dev/guides/connecting-ai-tools/) guide.
+
 3. Start your dev server and your agent. That's it. The bridge auto-reconnects in either direction — the order doesn't matter.
 
 ### Options

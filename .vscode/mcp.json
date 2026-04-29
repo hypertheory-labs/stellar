@@ -7,7 +7,7 @@
     },
     "stellar": {
       "command": "node",
-      "args": ["libs/stellar-mcp/dist/cli.js"],
+      "args": ["${workspaceFolder}/libs/stellar-mcp/dist/cli.js"],
       "type": "stdio"
     }
   }

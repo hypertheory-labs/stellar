@@ -34,6 +34,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Getting Started', slug: 'guides/getting-started' },
 						{ label: 'Using Stellar', slug: 'guides/using-stellar' },
+						{ label: 'Connecting AI tools', slug: 'guides/connecting-ai-tools' },
 						{ label: 'Working with AI assistants', slug: 'guides/working-with-ai' },
 					],
 				},
