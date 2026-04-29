@@ -47,9 +47,10 @@ cd apps/demo-ng && npx playwright test
 # Run sanitize unit tests
 npx nx run @hypertheory-labs/sanitize:test
 
-# Build both libraries
+# Build the libraries
 npx nx build sanitize
 npx nx build stellar-ng-devtools
+npx nx build stellar-mcp
 
 # Serve the docs site (localhost:4321)
 npx nx serve docs
@@ -59,6 +60,12 @@ Install Playwright browsers once if you haven't:
 ```bash
 npx playwright install --with-deps chromium
 ```
+
+### Working with the MCP server locally
+
+The repo's `.vscode/mcp.json` and `.mcp.json` both point at `libs/stellar-mcp/dist/cli.js` so you can dogfood AI tooling against your local changes. **The dist must exist** — if you haven't built `stellar-mcp` yet, the agent will silently fail to spawn the server. Run `npx nx build stellar-mcp` once after cloning, and rebuild whenever you change MCP-side code.
+
+For setup of Claude Code, VS Code (Copilot agent mode), and Codex, see the [Connecting AI tools](apps/docs/src/content/docs/guides/connecting-ai-tools.md) guide.
 
 ---
 

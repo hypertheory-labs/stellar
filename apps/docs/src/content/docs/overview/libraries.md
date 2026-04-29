@@ -74,7 +74,7 @@ Eliminates the copy-paste step between the Stellar overlay and an AI assistant. 
 | `stellar_recording` | Start/stop causal recording sessions; stop returns the directed graph |
 | `stellar_ai_context` | Pre-formatted markdown combining stores + HTTP with cross-references |
 
-**Usage:** add `withStellarBridge()` to `provideStellar(...)`, then configure your agent:
+**Usage:** add `withStellarBridge()` to `provideStellar(...)`, then configure your agent. For Claude Code, drop this in `.mcp.json` at your repo root:
 
 ```json
 {
@@ -86,6 +86,8 @@ Eliminates the copy-paste step between the Stellar overlay and an AI assistant. 
   }
 }
 ```
+
+For VS Code (Copilot agent mode), Codex CLI, and the "one tool at a time" port-binding caveat, see the [Connecting AI tools](/guides/connecting-ai-tools/) guide.
 
 **Peer dependency:** `@hypertheory-labs/stellar-ng-devtools` — both packages share the bridge protocol contract.
 
