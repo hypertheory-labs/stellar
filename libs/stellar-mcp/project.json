@@ -9,7 +9,7 @@
       "outputs": ["{projectRoot}/dist"],
       "options": {
         "cwd": "libs/stellar-mcp",
-        "command": "tsc -p tsconfig.lib.json"
+        "command": "tsup"
       }
     },
     "test": {

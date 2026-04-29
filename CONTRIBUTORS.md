@@ -67,6 +67,15 @@ The repo's `.vscode/mcp.json` and `.mcp.json` both point at `libs/stellar-mcp/di
 
 For setup of Claude Code, VS Code (Copilot agent mode), and Codex, see the [Connecting AI tools](apps/docs/src/content/docs/guides/connecting-ai-tools.md) guide.
 
+### Workspace dependency pinning
+
+Two pieces of configuration are load-bearing for keeping `@ngrx/signals` and `@types/node` deduplicated across the workspace, and they look like cruft if you don't know why they're there:
+
+- **`overrides` in [`package.json`](package.json)** — forces every transitive resolution to a single version. Without this, a nested package introducing a slightly different `@ngrx/signals` range can produce two physical copies in `node_modules` and break TypeScript project references.
+- **`paths` for `@ngrx/signals` in [`tsconfig.json`](tsconfig.json)** — pins TypeScript module resolution to the root `node_modules/@ngrx/signals`. Belt-and-suspenders alongside the npm override.
+
+If you remove one, remove both, and verify `nx run-many --target=build` still passes against a fresh `node_modules`.
+
 ---
 
 ## Branches and PRs
