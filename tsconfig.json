@@ -5,7 +5,15 @@
   "compilerOptions": {
     "paths": {
       "@hypertheory-labs/sanitize": ["./libs/sanitize/src/public-api.ts"],
-      "@hypertheory-labs/stellar-ng-devtools": ["./libs/stellar-ng/src/public-api.ts"]
+      "@hypertheory-labs/stellar-ng-devtools": ["./libs/stellar-ng/src/public-api.ts"],
+      "@hypertheory-labs/stellar-mcp": ["./libs/stellar-mcp/src/public-api.ts"],
+      // Pin @ngrx/signals resolution to the root node_modules. Belt-and-suspenders
+      // alongside the `overrides` block in package.json — guards against any future
+      // package introducing a duplicate copy and confusing TypeScript across the
+      // workspace's project references. See package.json `overrides` for the npm-side
+      // half of the same guarantee.
+      "@ngrx/signals": ["./node_modules/@ngrx/signals"],
+      "@ngrx/signals/*": ["./node_modules/@ngrx/signals/*"]
     },
     "strict": true,
     "noImplicitOverride": true,
@@ -44,6 +52,12 @@
     },
     {
       "path": "./libs/sanitize/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/stellar-mcp/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/stellar-mcp/tsconfig.spec.json"
     }
   ]
 }

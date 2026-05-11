@@ -92,3 +92,8 @@ export const UserStore = signalStore(
 ```
 
 Fields matching the built-in blocklist (`password`, `token`, `secret`, `apiKey`, `ssn`, `creditCard`, etc.) are redacted automatically even without an explicit config. See [The Libraries](/overview/libraries/) for the full list of available sanitization rules.
+
+## Next steps
+
+- **[Using Stellar](/guides/using-stellar/)** — open the overlay, capture recordings, copy state for an AI assistant.
+- **[Connecting AI tools](/guides/connecting-ai-tools/)** — wire Claude Code, VS Code (Copilot agent mode), or Codex to read live state directly from your dev app via `@hypertheory-labs/stellar-mcp`.

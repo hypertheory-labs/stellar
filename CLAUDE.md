@@ -223,6 +223,9 @@ and `autoRedactConfig()` are implemented and tested.
   - `options.sanitize` — merged with `autoRedactConfig()`
 - `provideStellar(...features)` — sets up `window.__stellarDevtools`
 - `withHttpTrafficMonitoring()` — `window.fetch` interceptor with causal context capture
+- `withStellarBridge(options?)` — connects the app to a stellar-mcp server over WebSocket.
+  Adds the `StellarBridgeService` which subscribes to the registry and pushes sanitized state
+  on every change. Defaults to `ws://localhost:4280/__stellar`. Auto-reconnects with backoff.
 - `StellarOverlayComponent` — overlay with state/diff/HTTP panels, ⏺ Rec / ⏹ Stop controls
 - `RecordingService` — `start()` / `stop()` → directed graph `RecordingSession` / `download()`
 - All CSS classes prefixed `stellar-*` (DaisyUI owns `.fab` — learned the hard way)
@@ -241,6 +244,57 @@ and `autoRedactConfig()` are implemented and tested.
 ### `StateSnapshot` — complete
 `inferredShape`, `trigger`, `httpEventId` all implemented.
 
+### `@hypertheory-labs/stellar-mcp` — Functional
+MCP (Model Context Protocol) server packaged separately from `stellar-ng-devtools`.
+Hosts a WebSocket bridge that the Angular app connects to via
+`provideStellar(withStellarBridge())`. State pushes app → MCP on every registry
+change; the MCP exposes that state to AI agents over stdio. **No browser
+automation, no Chrome DevTools Protocol** — just a TCP socket on localhost.
+
+- `bin: stellar-mcp` — stdio MCP server (`npx @hypertheory-labs/stellar-mcp`)
+- **Architecture: Path 2 (MCP-as-server).** The MCP process opens a WS server
+  on `127.0.0.1:4280/__stellar` (override with `--port`). The Angular dev app
+  is the client — it connects on bootstrap and reconnects with backoff if the
+  MCP isn't running yet.
+- Wire protocol lives in `libs/stellar-ng/src/lib/bridge-protocol.ts`. Single
+  source of truth: both the app-side service (`StellarBridgeService`) and the
+  MCP-side server (`BridgeServer`) import the same types and version constant.
+  Bumping `BRIDGE_PROTOCOL_VERSION` enforces handshake compatibility — a
+  mismatch closes the connection with a typed error rather than silently
+  corrupting state.
+- Tools: `stellar_describe`, `stellar_snapshot`, `stellar_history`, `stellar_diff`,
+  `stellar_http_traffic`, `stellar_recording`, `stellar_ai_context`
+- `BridgeServer` implements the `StellarClient` interface (the seam between
+  tools and the wire). Tools accept any `StellarClient`, so unit tests use a
+  fake. Reads come from an in-memory mirror updated by app pushes; mutations
+  (`record.start`, `save`) and formatter calls round-trip via RPC.
+- `defineTool({...})` helper produces a `McpToolDefinition` from a single Zod
+  shape — handler input is inferred from the schema, no `(schema as any).shape`
+  extraction in server.ts. The same shape is what the MCP SDK's `registerTool`
+  expects, so the type contract is end-to-end.
+
+#### Single source of truth for AI formatters
+There is **no duplicate** of the `format-for-ai.ts` functions in stellar-mcp.
+The app already runs them (the overlay's "Copy for AI" buttons + the bridge's
+RPC handlers), so they are exposed as
+`window.__stellarDevtools.formatForAI.{store,all,http,recording}` via the
+canonical `StellarDevtoolsApi`. The MCP `BridgeServer` calls them through the
+bridge protocol's RPC channel. New formatters automatically reach the MCP
+layer the moment they're added to the API surface.
+
+#### The contract
+`StellarDevtoolsApi` in `libs/stellar-ng/src/lib/stellar-devtools-api.ts` is
+the canonical type for `window.__stellarDevtools`. The bridge protocol
+(`bridge-protocol.ts`) is the canonical wire shape. Every consumer — the
+overlay, the MCP `BridgeServer`, the demo's e2e tests — depends on these
+single types. Adding fields is non-breaking; renaming or removing requires a
+major version bump.
+
+Tests: vitest unit (fast, all in-process). `bridge-server.spec.ts` exercises
+the real WS protocol with an in-test fake app over actual sockets — no
+browser dependency anywhere. The `vitest.config.integration.ts` slot remains
+available for future end-to-end tests that spawn the CLI as a child process.
+
 ## Key Files
 
 | File | Purpose |
@@ -253,7 +307,10 @@ and `autoRedactConfig()` are implemented and tested.
 | `docs/sanitize-api-design.md` | Current sanitize API design reference |
 | `CURRENT.md` | Session-facing: just landed / next / parked |
 | `libs/stellar-ng/src/lib/models.ts` | All shared types |
+| `libs/stellar-ng/src/lib/bridge-protocol.ts` | Wire protocol types + version constant — single source of truth for app and MCP |
 | `libs/stellar-ng/src/lib/stellar-registry.service.ts` | Core registry + click/event/HTTP context capture |
 | `libs/stellar-ng/src/lib/recording.service.ts` | Recording session graph builder |
 | `libs/stellar-ng/src/lib/stellar-overlay.component.ts` | Overlay UI |
-| `libs/stellar-ng/src/lib/provide-stellar-devtools.ts` | `window.__stellarDevtools` surface |
+| `libs/stellar-ng/src/lib/provide-stellar.ts` | `window.__stellarDevtools` surface |
+| `libs/stellar-ng/src/lib/stellar-bridge.service.ts` | Bridge WebSocket client — connects app to stellar-mcp |
+| `libs/stellar-mcp/src/lib/bridge-server.ts` | Bridge WebSocket server + `StellarClient` implementation |

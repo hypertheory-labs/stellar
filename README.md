@@ -14,6 +14,7 @@ browser extension.
 |---|---|
 | [`@hypertheory-labs/stellar-ng-devtools`](libs/stellar-ng/) | Angular devtools overlay for NgRx Signal Store |
 | [`@hypertheory-labs/sanitize`](libs/sanitize/) | Standalone state sanitization library — redact sensitive fields before any observer sees them |
+| [`@hypertheory-labs/stellar-mcp`](libs/stellar-mcp/) | Model Context Protocol server — exposes live state to Claude Code, Copilot, Codex, and other MCP-compatible agents |
 
 ---
 
@@ -25,8 +26,9 @@ browser extension.
 
 ```
 libs/
-  sanitize/       @hypertheory-labs/sanitize          — framework-agnostic sanitization library
+  sanitize/       @hypertheory-labs/sanitize           — framework-agnostic sanitization library
   stellar-ng/     @hypertheory-labs/stellar-ng-devtools — Angular devtools library
+  stellar-mcp/    @hypertheory-labs/stellar-mcp        — MCP server for AI agents (Node.js CLI)
 
 apps/
   demo-ng/        Angular demo application
@@ -50,12 +52,14 @@ nx dev docs
 # Build a specific project
 nx build @hypertheory-labs/sanitize
 nx build @hypertheory-labs/stellar-ng-devtools
+nx build @hypertheory-labs/stellar-mcp
 nx build demo-ng
 nx build docs
 
-# Run unit tests (Jasmine/Jest)
+# Run unit tests (Jasmine/Jest/Vitest)
 nx test @hypertheory-labs/sanitize
 nx test @hypertheory-labs/stellar-ng-devtools
+nx test @hypertheory-labs/stellar-mcp
 nx test demo-ng
 
 # Run Playwright e2e tests (requires demo-ng dev server already running)

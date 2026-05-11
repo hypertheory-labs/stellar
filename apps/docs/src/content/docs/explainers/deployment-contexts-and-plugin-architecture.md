@@ -58,7 +58,9 @@ The AI-facing output surface needed a name. Rejected: "AII" (sounds like a pirat
 
 ## The browser-tools-mcp / Kapture research
 
-We evaluated browser MCP tools for giving Claude live access to the running app. `browser-tools-mcp` (agentdeskai) is dead. Kapture is a viable alternative — Chrome extension + local Node server, console interception via method override and custom events (not CDP). The conclusion: **don't take the dependency now**. The `window.__stellarDevtools` API already provides everything Kapture would need to relay. The filesystem snapshot write (`.stellar/snapshot.json`) gets most of the benefit with none of the installation friction.
+We evaluated browser MCP tools for giving Claude live access to the running app. `browser-tools-mcp` (agentdeskai) is dead. Kapture is a viable alternative — Chrome extension + local Node server, console interception via method override and custom events (not CDP). The conclusion at the time: **don't take the dependency now**. The `window.__stellarDevtools` API already provides everything Kapture would need to relay.
+
+*Update (later session):* `@hypertheory-labs/stellar-mcp` shipped a first-party answer: a push-based WebSocket bridge that inverts the dependency (MCP hosts the WS server; the Angular dev app connects to it). No browser extension, no Chrome required, no polling. The bridge is part of the `provideStellar(withStellarBridge())` call. See [The Libraries](/overview/libraries/) for the full picture.
 
 **Jina.ai reader mode** (`r.jina.ai/` prefix) was discovered as the reliable way to fetch JavaScript-rendered documentation. Worth remembering.
 
@@ -78,7 +80,7 @@ The `/capture` skill was updated to also update `CURRENT.md` as part of end-of-s
 
 - **`withHttpTrafficMonitoring()`** — the open design question is whether HTTP data augments the existing state timeline (showing causal fetch→state links) or gets its own panel, or both. WebSockets and SSE are explicitly parked until fetch is solid.
 
-- **Filesystem snapshot write** — `.stellar/snapshot.json` remains the practical stepping stone to MCP. Deferred in favor of the plugin architecture foundation.
+- **Filesystem snapshot write** — `.stellar/snapshot.json` was considered a stepping stone to MCP. Not needed: `@hypertheory-labs/stellar-mcp` shipped a WebSocket bridge instead, which is push-based and requires no filesystem polling.
 
 - **Tree view for deeply nested state** — deferred until we have a demo store with intentionally large state so the expand/collapse behavior is tested against real pressure.
 

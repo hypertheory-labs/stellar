@@ -7,12 +7,19 @@ description: API reference for @hypertheory-labs/stellar-ng-devtools — the Ang
 
 ```ts
 // app.config.ts
-import { provideStellar, withHttpTrafficMonitoring } from '@hypertheory-labs/stellar-ng-devtools';
+import {
+  provideStellar,
+  withHttpTrafficMonitoring,
+  withStellarBridge,
+} from '@hypertheory-labs/stellar-ng-devtools';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideStellar(
       withHttpTrafficMonitoring(),
+      // Optional — connect to @hypertheory-labs/stellar-mcp so AI agents can
+      // query live state via MCP tools. Defaults to ws://localhost:4280/__stellar.
+      withStellarBridge(),
     ),
   ],
 };
@@ -181,6 +188,28 @@ Full API: window.__stellarDevtools has snapshot(), history(), diff(), http(), re
 Exercise the app before calling describe() — lazy-loaded stores only appear after their route is visited.
 A store name may have multiple `instances[]` if it was re-mounted (route or component-providers scoped); pass { instance: id } to snapshot/history/diff to inspect a specific one.
 ```
+
+---
+
+## withStellarBridge(options?)
+
+Opens a WebSocket connection from the Angular app to a running `@hypertheory-labs/stellar-mcp` server. Once connected, state pushes automatically on every registry change — the AI agent's MCP tools always see the latest sanitized state without any developer action.
+
+```ts
+withStellarBridge()
+// or with custom URL:
+withStellarBridge({ url: 'ws://localhost:4281/__stellar' })
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `url` | `ws://localhost:4280/__stellar` | WebSocket endpoint of the stellar-mcp server |
+
+The bridge reconnects automatically with exponential backoff if the MCP server restarts or hasn't started yet — order of startup does not matter.
+
+**Sanitization note:** `withStellarBridge()` only ever sees state that has already been sanitized by `withStellarDevtools()`. No raw state crosses the bridge wire.
+
+See `@hypertheory-labs/stellar-mcp` for server setup and the full list of MCP tools.
 
 ---
 

@@ -47,9 +47,10 @@ cd apps/demo-ng && npx playwright test
 # Run sanitize unit tests
 npx nx run @hypertheory-labs/sanitize:test
 
-# Build both libraries
+# Build the libraries
 npx nx build sanitize
 npx nx build stellar-ng-devtools
+npx nx build stellar-mcp
 
 # Serve the docs site (localhost:4321)
 npx nx serve docs
@@ -59,6 +60,21 @@ Install Playwright browsers once if you haven't:
 ```bash
 npx playwright install --with-deps chromium
 ```
+
+### Working with the MCP server locally
+
+The repo's `.vscode/mcp.json` and `.mcp.json` both point at `libs/stellar-mcp/dist/cli.js` so you can dogfood AI tooling against your local changes. **The dist must exist** — if you haven't built `stellar-mcp` yet, the agent will silently fail to spawn the server. Run `npx nx build stellar-mcp` once after cloning, and rebuild whenever you change MCP-side code.
+
+For setup of Claude Code, VS Code (Copilot agent mode), and Codex, see the [Connecting AI tools](apps/docs/src/content/docs/guides/connecting-ai-tools.md) guide.
+
+### Workspace dependency pinning
+
+Two pieces of configuration are load-bearing for keeping `@ngrx/signals` and `@types/node` deduplicated across the workspace, and they look like cruft if you don't know why they're there:
+
+- **`overrides` in [`package.json`](package.json)** — forces every transitive resolution to a single version. Without this, a nested package introducing a slightly different `@ngrx/signals` range can produce two physical copies in `node_modules` and break TypeScript project references.
+- **`paths` for `@ngrx/signals` in [`tsconfig.json`](tsconfig.json)** — pins TypeScript module resolution to the root `node_modules/@ngrx/signals`. Belt-and-suspenders alongside the npm override.
+
+If you remove one, remove both, and verify `nx run-many --target=build` still passes against a fresh `node_modules`.
 
 ---
 

@@ -330,8 +330,7 @@ additional information.
   runtime via reflection or explicit registration)? This would make the output significantly
   more useful for AI reasoning about type errors.
 
-- Should the MCP server be a first-party package (`@hypertheory-labs/stellar-mcp`) or designed
-  as a community contribution point?
+- ~~Should the MCP server be a first-party package (`@hypertheory-labs/stellar-mcp`) or designed as a community contribution point?~~ *Resolved: first-party. `@hypertheory-labs/stellar-mcp` shipped as a push-based WebSocket bridge — no browser automation required.*
 
 - How does AI Accessibility interact with a real-time mirroring stretch goal?
   A developer sharing their session with a colleague could equally share it with an AI
@@ -347,7 +346,7 @@ additional information.
 | Copy for AI button | Depends on sanitization |
 | `window.__stellarDevtools` | Independent — can land early |
 | State export (JSON file) | Depends on sanitization |
-| MCP server | Depends on `window.__stellarDevtools` API stability |
+| MCP server (`@hypertheory-labs/stellar-mcp`) | **Shipped.** Push-based WS bridge; app connects via `withStellarBridge()` |
 | WebRTC mirroring | Natural extension — same data, different transport |
 
 ---

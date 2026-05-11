@@ -112,10 +112,13 @@ The standard onboarding for an AI coding assistant working with a Stellar-instru
 
 ## What we deliberately deferred
 
-- **MCP server** — the right long-term answer for AI tools that can call `describe()` directly in a tool loop. Builds on this surface; deferred until the surface is stable.
 - **Automatic `sourceHint` population** — needs either build-time tooling or Angular reflection APIs. The slot exists in `RegisterOptions`; populating it automatically is a separate problem.
 - **`typeDefinition` in `describe()` output** — the slot exists; auto-generating TypeScript interface strings from inferred shapes is possible but not yet implemented.
 - **Claude Code skill** — `/stellar-inspect` as a publishable skill. Worth doing; not this sprint.
+
+## What shipped
+
+- **MCP server (`@hypertheory-labs/stellar-mcp`)** — the right answer for AI tools that can call tools in a loop. Hosts a WebSocket bridge on `localhost:4280/__stellar`; the Angular app connects via `withStellarBridge()`. The agent calls `stellar_describe`, `stellar_snapshot`, and `stellar_ai_context` directly — no developer relay needed. Sanitization runs upstream in `withStellarDevtools()`, so every value the agent sees is already scrubbed. See [The Libraries](/overview/libraries/) for the full tool list.
 
 ---
 

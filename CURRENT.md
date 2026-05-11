@@ -5,9 +5,19 @@ Updated at the end of every session via `/capture`.
 
 ---
 
-## Just landed
+## Just landed (this session)
+- **`@hypertheory-labs/stellar-mcp` package shipped** — Node MCP server on `feature/stellar-mcp`. Hosts a WS bridge on `localhost:4280/__stellar`; Angular app connects via `withStellarBridge()`. Exposes `stellar_describe`, `stellar_snapshot`, `stellar_history`, `stellar_diff`, `stellar_http_traffic`, `stellar_recording`, `stellar_ai_context` to AI agents over stdio. Sanitization runs upstream — no raw state crosses the wire.
+- **`withStellarBridge()` added to `stellar-ng` public API** — auto-reconnects with backoff; bridge protocol is the single source of truth (`bridge-protocol.ts` shared by app and MCP). `stellar-ng` bumped to v0.1.0 to reflect the new public surface.
+- **`StellarDevtoolsApi` typed contract** — `libs/stellar-ng/src/lib/stellar-devtools-api.ts` is the canonical type for `window.__stellarDevtools`; consumers (overlay, MCP `BridgeServer`, e2e tests) all depend on it.
+- **AI-formatter functions exported** — `formatStoreForAI`, `formatHttpEventsForAI`, `formatRecordingForAI`, `formatAllStoresForAI` re-exported from `stellar-ng` for consumers writing custom Angular tooling that wants the same markdown shape without going through `window`.
+- **Connecting AI tools guide** — `apps/docs/src/content/docs/guides/connecting-ai-tools.md`. Side-by-side Claude Code / VS Code (Copilot agent mode) / Codex CLI configs, plus the "one tool at a time" port-4280 caveat and troubleshooting for the working-directory + port-binding silent-failure modes.
+- **Repo discoverability for stellar-mcp** — added to root `README.md` packages table, workspace tree, and `nx build`/`test` examples. CONTRIBUTORS.md flags the local-build prerequisite for AI tooling and explains the workspace dependency-pinning band-aids (`overrides` + tsconfig `paths` for `@ngrx/signals`).
+- **Verify-bridge smoke test** — `scripts/verify-bridge.mjs` connects to a running stellar-mcp as a fake app, pushes a synthetic state, and exercises the RPC channel. Useful manual check before publishing.
+- **PR hygiene fixes** — `nx build stellar-mcp` switched from `tsc` to `tsup` (was producing a broken dist), `@nx/nx-win32-x64-msvc` removed from root deps (Windows-only binding accidentally added — was breaking Cloudflare Pages builds), LICENSE file added to `libs/stellar-mcp/`.
+
+## Just landed (prior session)
 - **`@hypertheory-labs/sanitize` published to npm** — v0.0.1 live at npmjs.com
-- **`@hypertheory-labs/stellar-ng-devtools` published to npm** — v0.0.1 live at npmjs.com
+- **`@hypertheory-labs/stellar-ng-devtools` published to npm** — v0.0.1 live at npmjs.com (now bumped to v0.1.0 locally for the stellar-mcp peer-dep contract)
 - **Public repo live** — `github.com/hypertheory-labs/stellar`; private files stripped via `/sync-public` skill
 - **Package scope renamed** — `@hypertheory/` → `@hypertheory-labs/` across all files
 - **Hosting decided** — Cloudflare Pages for docs + demo (static), k8s cluster reserved for server-side workloads
@@ -56,7 +66,7 @@ Updated at the end of every session via `/capture`.
 - **`docs/demo-plan.md`** — living inventory of all showcase scenarios with requirements, status, and shared infrastructure table.
 - **TDR: Designing reproducible demos** — `apps/docs/src/content/docs/explainers/designing-reproducible-demos.md`
 
-## Just landed (this session)
+## Just landed (prior session — docs sprint)
 - **Explainer cleanup** — 22 → 17 explainers; 5 removed (general philosophy → blog), 1 trimmed, `keeping-principles-alive` replaced with three-artifact continuity doc
 - **Blog posts (9)** — extracted from explainers + new originals; `stop-giving-your-ai-a-role`, `designing-for-two-audiences`, `pair-programming-with-ai` among them; blog post `making-video-legible-to-ai` added this session
 - **`docs/` cleanup** — 11 historical artifacts removed
@@ -86,7 +96,6 @@ Updated at the end of every session via `/capture`.
 ## Parked / not this sprint
 - **`/capture-scenario` skill** — after a debugging session where Stellar + AI found a bug, the skill extracts the generalizable pattern (what structural condition caused it, what the recording showed, what the fix was) and scaffolds a new scenario component following the established showcase template. Two artifacts: the skill prompt (~markdown file) and a scenario stub template. Near-term, low build cost. See `docs/demo-plan.md` for the longer version of the idea including the "LLM communal knowledge" angle (pattern library accessible via llms.txt — needs more thought on curation and hosting before building).
 - `withNgrxReduxStoreTools()` — classic NgRx/Store users have Redux DevTools; low demand signal
-- MCP server
 - `createSanitizer()` factory (Tier 3 custom aliases)
 - Production-mode gating of the overlay
 - **Bug: panel clips at high browser zoom** — good first GitHub issue

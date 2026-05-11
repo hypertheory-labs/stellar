@@ -1,6 +1,11 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withExperimentalAutoCleanupInjectors } from '@angular/router';
-import { provideStellar, withNgrxSignalStoreTools, withHttpTrafficMonitoring } from '@hypertheory-labs/stellar-ng-devtools';
+import {
+  provideStellar,
+  withNgrxSignalStoreTools,
+  withHttpTrafficMonitoring,
+  withStellarBridge,
+} from '@hypertheory-labs/stellar-ng-devtools';
 
 import { routes } from './app.routes';
 
@@ -16,6 +21,11 @@ export const appConfig: ApplicationConfig = {
     provideStellar(
       withNgrxSignalStoreTools(),
       withHttpTrafficMonitoring(),
+      // Connects the running app to a stellar-mcp server over WebSocket so AI
+      // agents can query state without launching a browser. Defaults to
+      // ws://localhost:4280/__stellar — match it to the --port the MCP CLI
+      // is started with. Silently retries if the server isn't running yet.
+      withStellarBridge(),
     ),
   ],
 };

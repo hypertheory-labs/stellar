@@ -7,9 +7,17 @@ scratch.md
 /bazel-out
 
 # Node
-/node_modules
+node_modules/
 npm-debug.log
 yarn-error.log
+
+# TypeScript build artifacts that leak into source trees when tsc is run in-place
+libs/**/src/**/*.js
+libs/**/src/**/*.js.map
+libs/**/src/**/*.d.ts
+libs/**/src/**/*.d.ts.map
+libs/**/dist/
+libs/*/package-lock.json
 
 # IDEs and editors
 .idea/
