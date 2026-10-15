@@ -171,10 +171,14 @@ to specific things that happened in the sequence to make the explanation concret
 
 A recording captures the path the code actually took during a specific interaction — not the path a developer remembers, but the path that ran. Combined with `sourceHint` on each store, that path can be turned into a guided code walkthrough.
 
-This requires two things: `sourceHint` filled in on every store that participates in the recording (so the AI knows which files to look at), and a recording named after the user scenario rather than the default "recording".
+This requires two things: `sourceHint` filled in on every store that participates in the recording (so the AI knows which files to look at), and a recording named after the user scenario rather than the default "recording". The overlay's ⏺ Rec button always uses the default name, so start a named one from the console: `window.__stellarDevtools.record.start('customer-checkout-flow')`.
+
+The recording's Copy for AI output includes each store's `description` but not its `sourceHint`, so paste `describe()` alongside it.
 
 ```
 [Paste Copy for AI output — named something like "customer-checkout-flow"]
+
+[Paste window.__stellarDevtools.describe() output — it lists each store's sourceHint]
 
 [Paste the contents of the store files listed in sourceHint]
 
@@ -185,7 +189,7 @@ step should explain what happened at that point in the actual recorded session �
 not just what the code does in the abstract, but what it did in this interaction.
 ```
 
-The output is a `.tours/*.tour` JSON file that [CodeTour](https://marketplace.visualstudio.com/items?itemName=vsls-contrib.codetour) renders as a guided walkthrough in VS Code. Each step points at the exact line of code that fired during the recorded interaction.
+The output is a `.tours/*.tour` JSON file that [CodeTour](https://marketplace.visualstudio.com/items?itemName=vsls-contrib.codetour) renders as a guided walkthrough in VS Code. Each step points at a file from `sourceHint` and the AI's best reading of which line fired. Stellar records which stores and events were involved, not line numbers, so check the line choices.
 
 The key distinction from a manually-written tour: the steps are grounded in a recording of actual execution. The causal edges give the order. The delta fields give the specific behavior to describe at each step. The tour reflects what the code *did*, not what someone thought it did.
 
