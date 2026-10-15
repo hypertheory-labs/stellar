@@ -24,6 +24,7 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest # trusted publishing doesn't support self-hosted runners
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
 
@@ -58,8 +59,12 @@ jobs:
       - name: Unit tests
         run: npx nx run-many -t test -p @hypertheory-labs/sanitize @hypertheory-labs/stellar-ng-devtools @hypertheory-labs/stellar-mcp
 
+      # Playwright directly, not `nx run demo-ng:e2e`: the Nx-inferred target
+      # depends on demo-ng:serve and waits for it to exit, which a dev server
+      # never does. playwright.config.ts starts the server itself.
       - name: E2E tests
-        run: npx nx run demo-ng:e2e
+        working-directory: apps/demo-ng
+        run: npx playwright test
 
       - name: Build
         run: npx nx run-many -t build -p @hypertheory-labs/sanitize @hypertheory-labs/stellar-ng-devtools @hypertheory-labs/stellar-mcp
