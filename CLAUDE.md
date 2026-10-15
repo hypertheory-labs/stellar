@@ -205,6 +205,9 @@ so consumers don't need a separate import.
 ## Repo Notes
 
 - `.claude/settings.json` has `bypassPermissions` enabled — intentional for solo dev. Remove or move to `settings.local.json` before adding collaborators.
+- **Workspace is Angular 22 / NgRx 22 / Nx 23 / TS 6.0.** Do not add a tsconfig `paths` entry for
+  `@ngrx/signals` — it stops Vite prebundling it, `@ngrx/signals/events` gets its own copy, and
+  every `withReducer` store silently stops updating. npm `overrides` handles dedup. (See 1631159.)
 - **Branching**: default to committing directly on `master` for focused, intentional work. Use a feature branch when the work is genuinely exploratory (might be abandoned), touches something risky/hard to reverse, or when collaborators are involved and a PR review step makes sense. Use judgment — don't branch by default, but don't hesitate when it's warranted.
 
 ---
@@ -239,7 +242,7 @@ and `autoRedactConfig()` are implemented and tested.
 - Tailwind CSS v4 + DaisyUI v5 (dark theme)
 - PostCSS config MUST be `.postcssrc.json` at workspace root
 - Routes: `/` (counter/books/user/todos stores), `/sanitize` (all sanitization operators)
-- 39 Playwright e2e tests: API contract, sanitization, trigger field, AI format
+- 101 Playwright e2e tests: API contract, sanitization, trigger field, AI format, recording, lifecycle
 
 ### `StateSnapshot` — complete
 `inferredShape`, `trigger`, `httpEventId` all implemented.
