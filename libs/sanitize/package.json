@@ -1,6 +1,6 @@
 {
   "name": "@hypertheory-labs/sanitize",
-  "version": "0.0.1",
+  "version": "0.4.1",
   "description": "State sanitization library for developer tools — redact, mask, and transform sensitive fields before they reach any observer.",
   "keywords": ["sanitize", "redact", "state", "devtools", "ngrx", "angular"],
   "license": "MIT",

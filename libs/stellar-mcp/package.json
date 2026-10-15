@@ -1,6 +1,6 @@
 {
   "name": "@hypertheory-labs/stellar-mcp",
-  "version": "0.0.1",
+  "version": "0.4.1",
   "description": "Model Context Protocol server that exposes Stellar Devtools state, HTTP traffic, and recordings to AI coding agents over stdio.",
   "keywords": [
     "stellar",
