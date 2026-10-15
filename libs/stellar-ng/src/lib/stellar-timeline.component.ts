@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RecordingSession } from './models';
 import {
   buildTimelineLayout,
@@ -50,6 +50,7 @@ const EMPTY_LAYOUT: TimelineLayout = {
     .stellar-tl-detail-val { color: #cdd6f4; word-break: break-all; max-width: 300px; }
     .stellar-tl-detail-empty { color: #45475a; font-style: italic; }
   `],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div style="overflow-x: auto; overflow-y: auto; flex: 1;">
       <svg

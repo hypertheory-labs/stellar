@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NaiveProductsStore } from '../naive-products.store';
@@ -8,6 +8,7 @@ type ChaosState = 'off' | 'race' | 'activating';
 @Component({
   selector: 'app-race-condition-scenario',
   imports: [FormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="grid gap-6">
 

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
 import { StellarOverlayComponent } from '@hypertheory-labs/stellar-ng-devtools';
 
 @Component({
   selector: 'app-root',
   imports: [RouterLink, RouterOutlet, RouterLinkActive, StellarOverlayComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="min-h-screen bg-base-100">
       <div class="navbar bg-base-200 shadow-sm px-6">

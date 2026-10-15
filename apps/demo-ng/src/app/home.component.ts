@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CounterStore, counterEvents } from './counter.store';
 import { UserStore } from './user.store';
@@ -9,6 +9,7 @@ import { injectDispatch } from '@ngrx/signals/events';
 @Component({
   selector: 'app-home',
   imports: [FormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="grid gap-8">
 

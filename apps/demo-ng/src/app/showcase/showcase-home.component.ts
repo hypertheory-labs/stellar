@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 interface Scenario {
@@ -12,6 +12,7 @@ interface Scenario {
 @Component({
   selector: 'app-showcase-home',
   imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="grid gap-8">
       <div>

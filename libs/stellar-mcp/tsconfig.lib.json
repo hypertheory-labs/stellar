@@ -9,6 +9,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "types": ["node"],
+    // tsup's dts build injects `baseUrl`, which TS 6 deprecates as an error.
+    // Revisit before TS 7 (where it's removed) — likely by moving off tsup.
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@hypertheory-labs/stellar-ng-devtools": ["../../libs/stellar-ng/src/public-api.ts"],
       "@hypertheory-labs/sanitize": ["../../libs/sanitize/src/public-api.ts"],

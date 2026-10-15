@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
@@ -66,6 +66,7 @@ interface RegistryShape {
 
 @Component({
   selector: 'demo-lifecycle-readout',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-base-content/70 mt-2">
       <dt>instances</dt>
@@ -112,6 +113,7 @@ export class LifecycleReadoutComponent {
   selector: 'demo-scoped-counter-card',
   imports: [LifecycleReadoutComponent],
   providers: [ScopedCounterStore],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="card bg-base-200">
       <div class="card-body">
@@ -137,6 +139,7 @@ export class ScopedCounterCardComponent {
   selector: 'demo-lifecycle-showcase',
   imports: [RouterLink, ScopedCounterCardComponent, LifecycleReadoutComponent],
   providers: [RouteCounterStore],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="max-w-4xl mx-auto p-6 grid gap-6">
       <header>

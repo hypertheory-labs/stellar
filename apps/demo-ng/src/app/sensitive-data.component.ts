@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { SensitiveDataStore } from './sensitive-data.store';
 
 @Component({
   selector: 'app-sensitive-data',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="grid gap-6">
 

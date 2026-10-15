@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { injectDispatch } from '@ngrx/signals/events';
 import { bookSearchPageEvents, BookSearchEventsStore } from './book-search-events.store';
 
 @Component({
   selector: 'app-book-search-events',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="grid gap-8 max-w-2xl">
 

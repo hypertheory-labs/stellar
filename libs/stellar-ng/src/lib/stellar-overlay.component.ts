@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { StellarRegistryService } from './stellar-registry.service';
@@ -603,6 +603,7 @@ function highlightValue(value: unknown, indent: number): string {
       50% { opacity: 0.3; }
     }
   `],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (mode() === 'http') {
       <div class="stellar-panel" [style.width.px]="panelWidth()" [style.height.px]="panelHeight()">

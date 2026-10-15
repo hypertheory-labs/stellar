@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
@@ -23,6 +23,7 @@ export const LifecycleStore = signalStore(
   selector: 'demo-lifecycle-test',
   imports: [RouterLink],
   providers: [LifecycleStore],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section style="padding: 1rem;">
       <h2>Lifecycle Test</h2>
@@ -39,6 +40,7 @@ export class LifecycleTestComponent {
 @Component({
   selector: 'demo-empty-test',
   imports: [RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section style="padding: 1rem;">
       <p>Empty test page</p>

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ProductsStore } from '../../products.store';
@@ -6,6 +6,7 @@ import { ProductsStore } from '../../products.store';
 @Component({
   selector: 'app-outbox-scenario',
   imports: [FormsModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="grid gap-6">
 
