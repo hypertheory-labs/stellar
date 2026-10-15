@@ -14,13 +14,13 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/core": "^21.2.0",
-    "@angular/platform-browser": "^21.2.0",
-    "@hypertheory-labs/sanitize": "^0.4.1",
-    "@ngrx/signals": "^21.0.0"
+    "@angular/common": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/platform-browser": "^22.0.0",
+    "@ngrx/signals": "^22.0.0"
   },
   "dependencies": {
+    "@hypertheory-labs/sanitize": "^0.4.1",
     "tslib": "^2.3.0"
   },
   "sideEffects": false

@@ -3,5 +3,6 @@
   "dest": "../../dist/stellar-ng",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["@hypertheory-labs/sanitize"]
 }

@@ -17,10 +17,12 @@ In-browser developer overlay for Angular applications using NgRx Signal Store.
 ## Installation
 
 ```bash
-npm install @hypertheory-labs/stellar-ng-devtools @hypertheory-labs/sanitize
+npm install @hypertheory-labs/stellar-ng-devtools
 ```
 
-Peer dependencies: Angular 21+, NgRx Signals 21+.
+`@hypertheory-labs/sanitize` is installed automatically as a dependency.
+
+Peer dependencies: Angular 22+, NgRx Signals 22+.
 
 ---
 
@@ -104,11 +106,10 @@ window.__stellarDevtools.record.stopAndDownload()
 
 | Package | Version |
 |---|---|
-| `@angular/core` | ^21.2.0 |
-| `@angular/common` | ^21.2.0 |
-| `@angular/platform-browser` | ^21.2.0 |
-| `@ngrx/signals` | ^21.0.0 |
-| `@hypertheory-labs/sanitize` | ^0.0.1 |
+| `@angular/core` | ^22.0.0 |
+| `@angular/common` | ^22.0.0 |
+| `@angular/platform-browser` | ^22.0.0 |
+| `@ngrx/signals` | ^22.0.0 |
 
 ---
 

@@ -9,8 +9,8 @@ Stellar Devtools has not yet published a stable release to npm. Installation ins
 
 ## Prerequisites
 
-- Angular 21+
-- `@ngrx/signals` 21+
+- Angular 22+
+- `@ngrx/signals` 22+
 
 ## Install
 
