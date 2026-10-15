@@ -31,5 +31,8 @@
       "Bash(npx vitest:*)",
       "Bash(grep -l \"\\\\.dial\\\\b\\\\|\\\\.store-chip\\\\b\" /Users/jeffrygonzalez/work/stellar/node_modules/daisyui/components/*.css)"
     ]
-  }
+  },
+  "disabledMcpjsonServers": [
+    "stellar"
+  ]
 }
