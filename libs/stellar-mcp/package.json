@@ -16,7 +16,7 @@
   "homepage": "https://stellar.hypertheory-labs.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hypertheory-labs/stellar.git",
+    "url": "git+https://github.com/hypertheory-labs/stellar.git",
     "directory": "libs/stellar-mcp"
   },
   "publishConfig": {
@@ -32,7 +32,7 @@
     }
   },
   "bin": {
-    "stellar-mcp": "./dist/cli.js"
+    "stellar-mcp": "dist/cli.js"
   },
   "files": [
     "dist",

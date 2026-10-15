@@ -1,0 +1,80 @@
+# Publishes all three packages to npm when a version tag is pushed.
+#
+#   node scripts/set-version.mjs 0.5.0
+#   git commit -am "chore: release 0.5.0"
+#   git tag v0.5.0 && git push origin master v0.5.0
+#
+# Auth is npm trusted publishing (OIDC): no npm token in repo secrets. Each
+# package's npmjs.com settings name this file (publish.yml) as its trusted
+# publisher, so renaming it breaks publishing.
+name: Publish
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: read
+  id-token: write # lets npm verify this run came from this repo/workflow
+
+env:
+  NX_NO_CLOUD: true
+  NX_DAEMON: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest # trusted publishing doesn't support self-hosted runners
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false # npm's advice: no caching in release builds
+
+      - name: Use npm with trusted publishing support (>= 11.5.1)
+        run: npm install -g npm@11
+
+      - name: Check tag matches package versions
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          fail=0
+          for f in libs/sanitize/package.json libs/stellar-ng/package.json libs/stellar-mcp/package.json; do
+            v=$(node -p "require('./$f').version")
+            if [ "$v" != "$TAG" ]; then echo "::error file=$f::version is $v, tag is v$TAG"; fail=1; fi
+          done
+          dep=$(node -p "require('./libs/stellar-ng/package.json').dependencies['@hypertheory-labs/sanitize']")
+          if [ "$dep" != "^$TAG" ]; then echo "::error::stellar-ng depends on sanitize $dep, expected ^$TAG"; fail=1; fi
+          [ $fail -eq 0 ] || { echo "Run: node scripts/set-version.mjs $TAG"; exit 1; }
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Unit tests
+        run: npx nx run-many -t test -p @hypertheory-labs/sanitize @hypertheory-labs/stellar-ng-devtools @hypertheory-labs/stellar-mcp
+
+      - name: E2E tests
+        run: npx nx run demo-ng:e2e
+
+      - name: Build
+        run: npx nx run-many -t build -p @hypertheory-labs/sanitize @hypertheory-labs/stellar-ng-devtools @hypertheory-labs/stellar-mcp
+
+      # sanitize first: stellar-ng-devtools depends on it. A package whose
+      # version is already on npm is skipped, so a failed run can be re-run.
+      # The leading ./ matters: npm reads "dist/stellar-ng" as a GitHub repo.
+      - name: Publish
+        run: |
+          publish() {
+            name=$(node -p "require('./$1/package.json').name")
+            version=$(node -p "require('./$1/package.json').version")
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "$name@$version already published, skipping"
+            else
+              npm publish "$1"
+            fi
+          }
+          publish ./dist/hypertheory-labs/sanitize
+          publish ./dist/stellar-ng
+          publish ./libs/stellar-mcp
