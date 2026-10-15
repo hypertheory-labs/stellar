@@ -71,7 +71,8 @@ export type {
   StateMessage,
 } from './lib/bridge-protocol';
 
-// Re-exported from @hypertheory-labs/sanitize for convenience — consumers of
-// stellardevtools don't need a separate import just to type their sanitize config.
-export { sanitizeConfig } from '@hypertheory-labs/sanitize';
+// Re-exported from @hypertheory-labs/sanitize so a store's sanitize config can
+// be written with a single install. Importing from sanitize directly without
+// declaring it fails under strict package managers (pnpm, Yarn PnP).
+export { sanitizeConfig, arrayOf, keepFirst, keepLast, truncate, replace } from '@hypertheory-labs/sanitize';
 export type { SanitizationConfig, SanitizationHandler } from '@hypertheory-labs/sanitize';
