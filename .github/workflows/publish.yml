@@ -48,7 +48,10 @@ jobs:
           if [ "$dep" != "^$TAG" ]; then echo "::error::stellar-ng depends on sanitize $dep, expected ^$TAG"; fail=1; fi
           [ $fail -eq 0 ] || { echo "Run: node scripts/set-version.mjs $TAG"; exit 1; }
 
-      - run: npm ci
+      # --foreground-scripts runs install scripts one at a time. Two esbuild
+      # copies (Angular's and tsup's) otherwise race: one exec's its binary
+      # while it's still being written (ETXTBSY).
+      - run: npm ci --foreground-scripts
 
       - run: npx playwright install --with-deps chromium
 
