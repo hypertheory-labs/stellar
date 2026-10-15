@@ -12,9 +12,10 @@ The Angular devtools library. Provides:
 - `withHttpTrafficMonitoring()` — `window.fetch` interceptor with causal linking to the state changes each request produced
 - `withStellarBridge(options?)` — connects the app to `@hypertheory-labs/stellar-mcp` over WebSocket; auto-reconnects with backoff
 - `StellarOverlayComponent` — visual overlay mounted via `<stellar-overlay />` in your app template
-- `sanitizeConfig<T>(config)` — typed helper for declaring per-store sanitization rules
+- `withNgrxSignalStoreTools()` — declares the NgRx Signal Store integration in `provideStellar()` (currently a marker; adds no providers)
+- `sanitizeConfig<T>(config)` — typed helper for declaring per-store sanitization rules. The operators `arrayOf`, `keepFirst`, `keepLast`, `truncate` and `replace` are re-exported too.
 
-**Peer dependencies:** `@angular/core`, `@angular/common`, `@ngrx/signals`
+**Peer dependencies:** `@angular/core`, `@angular/common`, `@angular/platform-browser`, `@ngrx/signals` (all `^22.0.0`). `@hypertheory-labs/sanitize` is a regular dependency and installs automatically.
 
 **Status:** functional. Full snapshot format (`inferredShape`, `trigger`, `httpEventId`) is implemented and stable.
 
@@ -32,11 +33,11 @@ A standalone, framework-agnostic sanitization library. Zero dependency on the de
 |---|---|
 | `'omitted'` | Removes the field entirely |
 | `'redacted'` | Replaces with `[redacted]` |
-| `'masked'` | Replaces characters with `*`, keeps length |
-| `'hashed'` | Replaces with a SHA-style hash |
+| `'masked'` | Replaces with `*`, one per character, capped at 8 |
+| `'hashed'` | Replaces with a short, stable, non-cryptographic hash, e.g. `[~3f9a12b4]` |
 | `'lastFour'` | Keeps last 4 characters |
 | `'firstFour'` | Keeps first 4 characters |
-| `'email'` | Keeps domain, redacts local part |
+| `'email'` | Keeps the first two characters and the domain (`jo***@example.com`) |
 
 **Semantic aliases** (map to the rules above): `'creditCard'`, `'debitCard'`, `'ssn'`, `'password'`, `'apiKey'`, `'token'`, `'secret'`, `'phoneNumber'`, `'emailAddress'`
 

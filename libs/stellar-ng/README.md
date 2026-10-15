@@ -55,8 +55,7 @@ export const appConfig: ApplicationConfig = {
 
 ```ts
 // user.store.ts
-import { withStellarDevtools } from '@hypertheory-labs/stellar-ng-devtools';
-import { sanitizeConfig } from '@hypertheory-labs/sanitize';
+import { withStellarDevtools, sanitizeConfig } from '@hypertheory-labs/stellar-ng-devtools';
 
 export const UserStore = signalStore(
   withState<UserState>({ ... }),
@@ -74,10 +73,12 @@ export const UserStore = signalStore(
 **3. Add the overlay to your app template:**
 
 ```html
-<!-- app.component.html -->
+<!-- app.html -->
 <router-outlet />
 <stellar-overlay />
 ```
+
+Add `StellarOverlayComponent` (from `@hypertheory-labs/stellar-ng-devtools`) to your root component's `imports`.
 
 The overlay appears as a floating button in the corner. Click it to open the devtools panel.
 
@@ -85,7 +86,7 @@ The overlay appears as a floating button in the corner. Click it to open the dev
 
 ## `window.__stellarDevtools`
 
-Available in development mode in the browser console:
+Available in the browser console whenever `provideStellar()` is in your providers. Stellar doesn't switch itself off in production builds, so include it only in development configurations.
 
 ```ts
 window.__stellarDevtools.snapshot()           // all stores, current sanitized state
@@ -98,6 +99,9 @@ window.__stellarDevtools.describe()           // manifest of all registered stor
 window.__stellarDevtools.record.start('my session')
 window.__stellarDevtools.record.stop()
 window.__stellarDevtools.record.stopAndDownload()
+
+window.__stellarDevtools.save()                // write .stellar/snapshot.json (File System Access API)
+window.__stellarDevtools.formatForAI.store('UserStore') // AI-ready markdown; also .all(), .http(), .recording()
 ```
 
 ---

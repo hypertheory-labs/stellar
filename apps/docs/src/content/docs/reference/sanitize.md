@@ -3,7 +3,11 @@ title: "@hypertheory-labs/sanitize API"
 description: API reference for @hypertheory-labs/sanitize — the standalone state sanitization library.
 ---
 
-import { LinkCard } from '@astrojs/starlight/components';
+```bash
+npm install @hypertheory-labs/sanitize
+```
+
+Already using `@hypertheory-labs/stellar-ng-devtools`? It depends on sanitize and re-exports `sanitizeConfig` and the operators, so you don't need this install.
 
 For the full API reference including all named rules, parameterized operators, and the `arrayOf()` combinator, see the [Sanitize API Design explainer](/explainers/sanitize-design/) — it covers every rule with rationale, the three-tier model, and key implementation decisions.
 
@@ -37,7 +41,7 @@ String literals — zero imports beyond the sanitize function itself.
 Curried functions returning a handler — mix freely with named rules.
 
 ```ts
-import { keepFirst, keepLast, truncate, replace } from '@hypertheory-labs/sanitize';
+import { sanitized, keepFirst, keepLast, truncate, replace } from '@hypertheory-labs/sanitize';
 
 sanitized(state, {
   internalId: keepFirst(6),
@@ -49,7 +53,7 @@ sanitized(state, {
 ### Arrays
 
 ```ts
-import { arrayOf } from '@hypertheory-labs/sanitize';
+import { sanitized, arrayOf } from '@hypertheory-labs/sanitize';
 
 sanitized(state, {
   customers: arrayOf({ email: 'omitted', creditCard: 'creditCard' }),
@@ -69,3 +73,13 @@ const config = sanitizeConfig<UserState>({
 
 Identity function at runtime; provides `SanitizationConfig<T>` typing at the call site.
 Also re-exported from `@hypertheory-labs/stellar-ng-devtools` for convenience.
+
+### Zero-config detection
+
+```ts
+import { sanitized, autoRedactConfig } from '@hypertheory-labs/sanitize';
+
+sanitized(state, autoRedactConfig(state))
+```
+
+`autoRedactConfig(state)` builds a config from the top-level field names in `state` that exactly match a semantic alias or `'email'` (e.g. a `password` field gets the `'password'` rule). It doesn't look at nested objects or variant names like `authToken`. `withStellarDevtools` runs this on every snapshot and merges your explicit `sanitize` config over it.

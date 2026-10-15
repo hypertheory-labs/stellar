@@ -62,7 +62,7 @@ nx test @hypertheory-labs/stellar-ng-devtools
 nx test @hypertheory-labs/stellar-mcp
 nx test demo-ng
 
-# Run Playwright e2e tests (requires demo-ng dev server already running)
+# Run Playwright e2e tests (starts the demo-ng dev server if it isn't running)
 nx e2e demo-ng
 ```
 
@@ -109,7 +109,7 @@ npx playwright test --config=apps/demo-ng/playwright.config.ts --debug e2e/trigg
 npx playwright show-report dist/.playwright/apps/demo-ng/playwright-report
 ```
 
-The four spec files and what they cover:
+Key spec files and what they cover (all of them are in `apps/demo-ng/e2e/`):
 
 | File | What it tests |
 |---|---|

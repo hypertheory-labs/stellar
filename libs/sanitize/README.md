@@ -16,15 +16,17 @@ Standalone. Zero dependencies on Angular, NgRx, or any framework.
 npm install @hypertheory-labs/sanitize
 ```
 
+Using `@hypertheory-labs/stellar-ng-devtools`? It installs this automatically and re-exports `sanitizeConfig` and the operators.
+
 ---
 
 ## Quick start
 
 ```ts
-import { sanitized } from '@hypertheory-labs/sanitize';
+import { sanitized, truncate } from '@hypertheory-labs/sanitize';
 
 const safeState = sanitized(userState, {
-  password:   'masked',       // → "***"
+  password:   'masked',       // → "********" (one * per char, max 8)
   apiKey:     'hashed',       // → "[~3f9a12b4]" (stable, correlation-preserving)
   creditCard: 'creditCard',   // → last 4 digits
   ssn:        'omitted',      // key removed entirely

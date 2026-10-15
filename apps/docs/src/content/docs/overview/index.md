@@ -24,4 +24,4 @@ This is active exploration. The libraries are usable and have real design commit
 - A browser extension (the overlay runs inside the app)
 - A replacement for your AI coding assistant (we're building the data layer it needs)
 - A compliance tool (though the sanitizer is useful for compliance)
-- A surveillance tool (all data stays local; nothing is transmitted)
+- A surveillance tool (state stays on your machine unless you hand it to an AI tool, through Copy for AI or the optional local MCP bridge, and it's sanitized before it does)
