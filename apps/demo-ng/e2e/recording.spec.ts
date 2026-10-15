@@ -173,8 +173,15 @@ test.describe('state capture during recording', () => {
   });
 
   test('state-snapshot node includes delta for changed keys', async ({ page }) => {
-    // Ensure at least one prior snapshot exists so delta can be computed
+    // Ensure at least one prior snapshot exists so delta can be computed.
+    // Wait for it to land: on a cold page the store's first snapshot can
+    // otherwise arrive after start(), get recorded with no predecessor (so
+    // no delta), and satisfy the wait below before the second click does.
+    const initial = await page.evaluate(
+      () => (window as any).__stellarDevtools.snapshot('CounterStore')?.history.length ?? 0,
+    );
     await page.click('button:has-text("+")');
+    await waitForNewSnapshot(page, 'CounterStore', initial);
 
     const before = await page.evaluate(
       () => (window as any).__stellarDevtools.snapshot('CounterStore')?.history.length ?? 0,
